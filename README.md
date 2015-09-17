@@ -25,7 +25,7 @@ Configuration
 Example:
 ```javascript
 {
-    "interval": 15, // Update interval in seconds
+    "interval": 15000, // Update interval in milliseconds
     "notifyAtStart": false, // Send notification with offline services on start
 	"processList": // Process list for monitoring
     [

@@ -166,6 +166,6 @@ func (monitor *Monitor) Run() {
 
 		monitor.EmptyTemp()
 
-		time.Sleep(monitor.Config.Interval * time.Second)
+		time.Sleep(monitor.Config.Interval * time.Millisecond)
 	}
 }

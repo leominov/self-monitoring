@@ -1,5 +1,5 @@
 {
-    "interval": 15,
+    "interval": 15000,
     "notifyAtStart": false,
 	"processList":
     [
