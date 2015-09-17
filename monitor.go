@@ -150,6 +150,8 @@ func (monitor *Monitor) EmptyTemp() {
 
 // Run monitor
 func (monitor *Monitor) Run() {
+	monitor.Prepare()
+
 	for {
 		monitor.Counter++
 		err := monitor.UpdateServiceList()

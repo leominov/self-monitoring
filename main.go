@@ -17,6 +17,5 @@ func main() {
 	monitor := Monitor{}
 	monitor.Config = config
 
-	monitor.Prepare()
 	monitor.Run()
 }
