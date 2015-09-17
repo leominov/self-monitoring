@@ -22,7 +22,7 @@
     ],
     "logger": true,
     "telegram": {
-        "enable": true,
+        "enable": false,
         "token": "",
         "contactID": 0,
         "debug": true
