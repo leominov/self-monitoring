@@ -15,6 +15,10 @@ Run:
 ```shell
 go run *.go
 ```
+Or build:
+```shell
+go build *.go
+```
 
 Configuration
 -------------
