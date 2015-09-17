@@ -22,7 +22,7 @@ go build *.go
 
 Configuration
 -------------
-Example:
+Example with description:
 ```javascript
 {
     "interval": 15000, // Update interval in milliseconds
