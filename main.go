@@ -14,14 +14,8 @@ func main() {
 		return
 	}
 
-	monitor := Monitor{
-		config,      // Config
-		[]string{},  // CurrentServiceList
-		[]Service{}, // ServiceList
-		[]string{},  // ListOn
-		[]string{},  // ListOff
-		0,           // Counter
-	}
+	monitor := Monitor{}
+	monitor.Config = config
 
 	monitor.Prepare()
 	monitor.Run()
