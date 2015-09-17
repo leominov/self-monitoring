@@ -1,6 +1,6 @@
 {
     "interval": 15,
-    "notifyAtStart": false,
+    "notifyAtStart": true,
 	"processList":
     [
         "acrypt",
@@ -18,14 +18,13 @@
 		"redis-server",
 		"smbd",
 		"transmission",
-		"vsftpd",
-		"top"
+		"vsftpd"
     ],
     "logger": true,
     "telegram": {
         "enable": true,
-        "token": "112162978:AAEAQg5rL9EGZjMmwSiFrlhlP6qnmLn8f9s",
-        "contactID": 85022650,
-        "debug": false
+        "token": "",
+        "contactID": 0,
+        "debug": true
     }
 }

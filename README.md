@@ -3,14 +3,17 @@ Self-monitoring tool (sketch)
 
 Usage
 -----
-Run with 'config.json' config file:
+Create own config file:
+```shell
+cp example.config.json config.json
+```
+Edit configuration:
+```shell
+vim config.json
+```
+Run:
 ```shell
 go run *.go
-```
-
-Run with 'local.config.json' config file:
-```shell
-go run *.go --config=local.config.json
 ```
 
 Configuration
