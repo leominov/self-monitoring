@@ -244,7 +244,6 @@ func main() {
 
 	for {
 		monitor.Run()
-
 		time.Sleep(monitor.Config.Interval * time.Second)
 	}
 }
