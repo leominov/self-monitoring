@@ -1,0 +1,30 @@
+{
+    "interval": 15,
+	"processList":
+    [
+        "acrypt",
+		"capella",
+		"docker",
+		"igmpproxy",
+		"memcached",
+		"mongod",
+		"mysqld",
+		"nginx",
+		"openvpn",
+		"php5-fpm",
+		"postgres",
+		"pptpd",
+		"redis-server",
+		"smbd",
+		"transmission",
+		"vsftpd",
+		"top"
+    ],
+    "logger": true,
+    "telegram": {
+        "enable": true,
+        "token": "",
+        "contactID": 0,
+        "debug": true
+    }
+}

@@ -1,10 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -17,133 +21,230 @@ type Service struct {
 	current, new bool
 }
 
-var (
-	processList = []string{
-		"acrypt",
-		"capella",
-		"docker",
-		"igmpproxy",
-		"memcached",
-		"mongod",
-		"mysqld",
-		"nginx",
-		"openvpn",
-		"php5-fpm",
-		"postgres",
-		"pptpd",
-		"redis-server",
-		"smbd",
-		"transmission",
-		"vsftpd",
-		"top",
-	}
+// TelegramConfig structure
+type TelegramConfig struct {
+	Enable    bool   `json:"enable,omitempty"`
+	Token     string `json:"token,omitempty"`
+	ContactID int    `json:"contactID,omitempty"`
+	Debug     bool   `json:"debug,omitempty"`
+}
 
-	token     = flag.String("token", "", "Telegram API Token")
-	contactID = flag.Int("client", 0, "Telegram Contact ID")
+// ConfigFile structure
+type ConfigFile struct {
+	Telegram    TelegramConfig `json:"telegram,omitempty"`
+	ProcessList []string       `json:"processList"`
+	Logger      bool           `json:"logger,omitempty"`
+	Interval    time.Duration  `json:"interval,omitempty"`
+	filename    string
+}
+
+// Monitor structure
+type Monitor struct {
+	Config             *ConfigFile
+	CurrentServiceList []string
+	ServiceList        []Service
+	ListOn, ListOff    []string
+}
+
+const (
+	// ConfigFileName is the name of config file
+	ConfigFileName = "config.json"
 )
 
-func createList() []Service {
+var (
+	config = flag.String("config", ConfigFileName, "Config file")
+)
+
+// Load configuration
+func Load(config *string) (*ConfigFile, error) {
+	configFile := ConfigFile{
+		filename: filepath.Join("./", *config),
+	}
+
+	if _, err := os.Stat(configFile.filename); err == nil {
+		file, err := os.Open(configFile.filename)
+		if err != nil {
+			return &configFile, err
+		}
+		defer file.Close()
+		err = configFile.LoadFromReader(file)
+
+		return &configFile, err
+	} else if !os.IsNotExist(err) {
+		return &configFile, err
+	}
+
+	return &configFile, fmt.Errorf("Config file not found")
+}
+
+// LoadFromReader yep
+func (configFile *ConfigFile) LoadFromReader(configData io.Reader) error {
+	if err := json.NewDecoder(configData).Decode(&configFile); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Prepare parameters
+func (monitor *Monitor) Prepare() {
 	serviceList := []Service{}
 
-	for _, name := range processList {
+	for _, name := range monitor.Config.ProcessList {
 		serviceList = append(serviceList, Service{name, true, false})
 	}
 
-	return serviceList
+	monitor.ServiceList = serviceList
 }
 
-func getServiceList() ([]string, error) {
+// UpdateServiceList getting current process list
+func (monitor *Monitor) UpdateServiceList() error {
 	cmd := exec.Command("ps", "-eo", "comm=|sort|uniq")
 	output, err := cmd.CombinedOutput()
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return strings.Split(string(output), "\n"), nil
+	monitor.CurrentServiceList = strings.Split(string(output), "\n")
+
+	return nil
 }
 
-func checkStatusList(srvList []string, serviceList []Service) []Service {
-	for ID, service := range serviceList {
-		serviceList[ID].new = false
-		for _, sname := range srvList {
-			if serviceList[ID].new == true {
+// CheckStatusList for monitor
+func (monitor *Monitor) CheckStatusList() []Service {
+	for ID, service := range monitor.ServiceList {
+		monitor.ServiceList[ID].new = false
+		for _, sname := range monitor.CurrentServiceList {
+			if monitor.ServiceList[ID].new == true {
 				continue
 			} else if sname == service.name {
-				serviceList[ID].new = true
+				monitor.ServiceList[ID].new = true
 				continue
 			}
 		}
 	}
 
-	return serviceList
+	return monitor.ServiceList
 }
 
-func logSwitch(listOn []string, listOff []string) {
-	if len(listOn) > 0 {
-		fmt.Printf("%s: %s switch status to ON\n", time.Now(), strings.Join(append(listOn), ", "))
+// RunLogger service status
+func (monitor *Monitor) RunLogger() error {
+	if len(monitor.ListOn) > 0 {
+		fmt.Printf("%s: %s switch status to ON\n", time.Now(), strings.Join(append(monitor.ListOn), ", "))
 	}
 
-	if len(listOff) > 0 {
-		fmt.Printf("%s: %s switch status to OFF\n", time.Now(), strings.Join(append(listOff), ", "))
+	if len(monitor.ListOff) > 0 {
+		fmt.Printf("%s: %s switch status to OFF\n", time.Now(), strings.Join(append(monitor.ListOff), ", "))
 	}
+
+	return nil
 }
 
-func notifySwitch(listOn []string, listOff []string, bot *tgbotapi.BotAPI) {
-	if len(listOn) > 0 {
-		msg := tgbotapi.NewMessage(*contactID, fmt.Sprintf("%s switch status to ON", strings.Join(append(listOn), ", ")))
+// RunTelegram service status
+func (monitor *Monitor) RunTelegram() error {
+	telegram := &monitor.Config.Telegram
+
+	if telegram.Token == "" || telegram.ContactID == 0 {
+		fmt.Println("Error. Check configuration parameters:")
+		fmt.Println(" - Telegram.Token")
+		fmt.Println(" - Telegram.ContactID")
+		return fmt.Errorf("Error Telegram configuration")
+	}
+
+	bot, err := tgbotapi.NewBotAPI(monitor.Config.Telegram.Token)
+
+	if err != nil {
+		return err
+	}
+
+	bot.Debug = telegram.Debug
+
+	if len(monitor.ListOn) > 0 {
+		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf("%s switch status to ON", strings.Join(append(monitor.ListOn), ", ")))
 		bot.SendMessage(msg)
 	}
 
-	if len(listOff) > 0 {
-		msg := tgbotapi.NewMessage(*contactID, fmt.Sprintf("%s switch status to OFF", strings.Join(append(listOff), ", ")))
+	if len(monitor.ListOff) > 0 {
+		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf("%s switch status to OFF", strings.Join(append(monitor.ListOff), ", ")))
 		bot.SendMessage(msg)
 	}
+
+	return nil
 }
 
-func switchAndNotify(serviceList []Service, bot *tgbotapi.BotAPI) {
-	listOn := []string{}
-	listOff := []string{}
-
-	for ID, service := range serviceList {
+// Switch service status
+func (monitor *Monitor) Switch() {
+	for ID, service := range monitor.ServiceList {
 		if service.current != service.new {
 			if service.new {
-				listOn = append(listOn, service.name)
+				monitor.ListOn = append(monitor.ListOn, service.name)
 			} else {
-				listOff = append(listOff, service.name)
+				monitor.ListOff = append(monitor.ListOff, service.name)
 			}
 
-			serviceList[ID].current = service.new
+			monitor.ServiceList[ID].current = service.new
 		}
 	}
+}
 
-	logSwitch(listOn, listOff)
-	notifySwitch(listOn, listOff, bot)
+// Notify service status
+func (monitor *Monitor) Notify() {
+	if monitor.Config.Logger {
+		monitor.RunLogger()
+	}
+
+	if monitor.Config.Telegram.Enable {
+		monitor.RunTelegram()
+	}
+}
+
+// EmptyTemp data
+func (monitor *Monitor) EmptyTemp() {
+	monitor.ListOn = []string{}
+	monitor.ListOff = []string{}
+}
+
+// Run monitor
+func (monitor *Monitor) Run() error {
+	err := monitor.UpdateServiceList()
+
+	if err != nil {
+		return err
+	}
+
+	monitor.CheckStatusList()
+
+	monitor.Switch()
+	monitor.Notify()
+
+	monitor.EmptyTemp()
+
+	return nil
 }
 
 func main() {
 	flag.Parse()
-
-	if *token == "" || *contactID == 0 {
-		flag.PrintDefaults()
-		return
-	}
-
-	serviceList := createList()
-	bot, err := tgbotapi.NewBotAPI(*token)
+	config, err := Load(config)
 
 	if err != nil {
 		log.Panic(err)
+		return
 	}
 
+	monitor := Monitor{
+		config,
+		[]string{},
+		[]Service{},
+		[]string{},
+		[]string{},
+	}
+
+	monitor.Prepare()
+
 	for {
-		currentServiceList, err := getServiceList()
+		monitor.Run()
 
-		if err == nil {
-			srv := checkStatusList(currentServiceList, serviceList)
-			switchAndNotify(srv, bot)
-		}
-
-		time.Sleep(3 * time.Second)
+		time.Sleep(monitor.Config.Interval * time.Second)
 	}
 }
