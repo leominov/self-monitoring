@@ -12,8 +12,8 @@ import (
 
 // Service structure
 type Service struct {
-	name         string
-	current, new bool
+	Name                   string
+	CurrentState, NewState bool
 }
 
 // Monitor structure
@@ -53,12 +53,12 @@ func (monitor *Monitor) UpdateServiceList() error {
 // CheckStatusList for monitor
 func (monitor *Monitor) CheckStatusList() []Service {
 	for ID, service := range monitor.ServiceList {
-		monitor.ServiceList[ID].new = false
+		monitor.ServiceList[ID].NewState = false
 		for _, sname := range monitor.CurrentServiceList {
-			if monitor.ServiceList[ID].new == true {
+			if monitor.ServiceList[ID].NewState == true {
 				continue
-			} else if sname == service.name {
-				monitor.ServiceList[ID].new = true
+			} else if sname == service.Name {
+				monitor.ServiceList[ID].NewState = true
 				continue
 			}
 		}
@@ -113,14 +113,14 @@ func (monitor *Monitor) RunTelegram() error {
 // Switch service status
 func (monitor *Monitor) Switch() {
 	for ID, service := range monitor.ServiceList {
-		if service.current != service.new {
-			if service.new {
-				monitor.ListOn = append(monitor.ListOn, service.name)
+		if service.CurrentState != service.NewState {
+			if service.NewState {
+				monitor.ListOn = append(monitor.ListOn, service.Name)
 			} else {
-				monitor.ListOff = append(monitor.ListOff, service.name)
+				monitor.ListOff = append(monitor.ListOff, service.Name)
 			}
 
-			monitor.ServiceList[ID].current = service.new
+			monitor.ServiceList[ID].CurrentState = service.NewState
 		}
 	}
 }
