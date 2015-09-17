@@ -143,19 +143,22 @@ func (monitor *Monitor) EmptyTemp() {
 }
 
 // Run monitor
-func (monitor *Monitor) Run() error {
-	err := monitor.UpdateServiceList()
+func (monitor *Monitor) Run() {
+	for {
+		err := monitor.UpdateServiceList()
 
-	if err != nil {
-		return err
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		monitor.CheckStatusList()
+
+		monitor.Switch()
+		monitor.Notify()
+
+		monitor.EmptyTemp()
+
+		time.Sleep(monitor.Config.Interval * time.Second)
 	}
-
-	monitor.CheckStatusList()
-
-	monitor.Switch()
-	monitor.Notify()
-
-	monitor.EmptyTemp()
-
-	return nil
 }

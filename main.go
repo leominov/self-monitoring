@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"time"
 )
 
 func main() {
@@ -24,9 +23,5 @@ func main() {
 	}
 
 	monitor.Prepare()
-
-	for {
-		monitor.Run()
-		time.Sleep(monitor.Config.Interval * time.Second)
-	}
+	monitor.Run()
 }
