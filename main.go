@@ -20,6 +20,7 @@ func main() {
 		[]Service{}, // ServiceList
 		[]string{},  // ListOn
 		[]string{},  // ListOff
+		0,           // Counter
 	}
 
 	monitor.Prepare()

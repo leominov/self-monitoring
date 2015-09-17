@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 	"strings"
 	"time"
@@ -21,6 +22,7 @@ type Monitor struct {
 	CurrentServiceList []string
 	ServiceList        []Service
 	ListOn, ListOff    []string
+	Counter            int
 }
 
 // Prepare parameters
@@ -68,11 +70,11 @@ func (monitor *Monitor) CheckStatusList() []Service {
 // RunLogger service status
 func (monitor *Monitor) RunLogger() error {
 	if len(monitor.ListOn) > 0 {
-		fmt.Printf("%s: %s switch status to ON\n", time.Now(), strings.Join(append(monitor.ListOn), ", "))
+		log.Printf("%s switch status to ON\n", strings.Join(append(monitor.ListOn), ", "))
 	}
 
 	if len(monitor.ListOff) > 0 {
-		fmt.Printf("%s: %s switch status to OFF\n", time.Now(), strings.Join(append(monitor.ListOff), ", "))
+		log.Printf("%s switch status to OFF\n", strings.Join(append(monitor.ListOff), ", "))
 	}
 
 	return nil
@@ -83,9 +85,7 @@ func (monitor *Monitor) RunTelegram() error {
 	telegram := &monitor.Config.Telegram
 
 	if telegram.Token == "" || telegram.ContactID == 0 {
-		fmt.Println("Error. Check configuration parameters:")
-		fmt.Println(" - Telegram.Token")
-		fmt.Println(" - Telegram.ContactID")
+		log.Print("Check Telegram config parameters: token, contactID")
 		return fmt.Errorf("Error Telegram configuration")
 	}
 
@@ -127,12 +127,18 @@ func (monitor *Monitor) Switch() {
 
 // Notify service status
 func (monitor *Monitor) Notify() {
+	if monitor.Config.NotifyAtStart == false && monitor.Counter == 1 {
+		return
+	}
+
 	if monitor.Config.Logger {
 		monitor.RunLogger()
 	}
 
 	if monitor.Config.Telegram.Enable {
-		monitor.RunTelegram()
+		if err := monitor.RunTelegram(); err != nil {
+			log.Panic(err)
+		}
 	}
 }
 
@@ -145,10 +151,11 @@ func (monitor *Monitor) EmptyTemp() {
 // Run monitor
 func (monitor *Monitor) Run() {
 	for {
+		monitor.Counter++
 		err := monitor.UpdateServiceList()
 
 		if err != nil {
-			fmt.Println(err)
+			log.Print(err)
 			continue
 		}
 

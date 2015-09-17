@@ -20,11 +20,12 @@ type TelegramConfig struct {
 
 // ConfigFile structure
 type ConfigFile struct {
-	Telegram    TelegramConfig `json:"telegram,omitempty"`
-	ProcessList []string       `json:"processList"`
-	Logger      bool           `json:"logger,omitempty"`
-	Interval    time.Duration  `json:"interval,omitempty"`
-	filename    string
+	Telegram      TelegramConfig `json:"telegram,omitempty"`
+	ProcessList   []string       `json:"processList"`
+	Logger        bool           `json:"logger,omitempty"`
+	Interval      time.Duration  `json:"interval,omitempty"`
+	NotifyAtStart bool           `json:"notifyAtStart,omitempty"`
+	filename      string
 }
 
 const (
