@@ -17,8 +17,9 @@
 		"pptpd",
 		"redis-server",
 		"smbd",
-		"transmission",
-		"vsftpd"
+		"transmission-da",
+		"vsftpd",
+        "sockd"
     ],
     "logger": true,
     "telegram": {
