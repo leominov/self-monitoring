@@ -1,8 +1,7 @@
 {
     "interval": 15000,
     "notifyAtStart": true,
-	"processList":
-    [
+	"processList": [
         "acrypt",
 		"capella",
 		"docker",

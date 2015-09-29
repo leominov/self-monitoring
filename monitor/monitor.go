@@ -1,4 +1,4 @@
-package main
+package monitor
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Syfaro/telegram-bot-api"
+	"github.com/leominov/self-monitoring/config"
 )
 
 // Service structure
@@ -18,7 +19,7 @@ type Service struct {
 
 // Monitor structure
 type Monitor struct {
-	Config             *ConfigFile
+	Config             *config.File
 	CurrentServiceList []string
 	ServiceList        []Service
 	ListOn, ListOff    []string

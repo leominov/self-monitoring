@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -18,8 +18,8 @@ type TelegramConfig struct {
 	Debug     bool   `json:"debug,omitempty"`
 }
 
-// ConfigFile structure
-type ConfigFile struct {
+// File structure
+type File struct {
 	Telegram      TelegramConfig `json:"telegram,omitempty"`
 	ProcessList   []string       `json:"processList"`
 	Logger        bool           `json:"logger,omitempty"`
@@ -29,17 +29,18 @@ type ConfigFile struct {
 }
 
 const (
-	// ConfigFileName is the name of config file
-	ConfigFileName = "config.json"
+	// FileName is the name of config file
+	FileName = "config.json"
 )
 
 var (
-	config = flag.String("config", ConfigFileName, "Config file")
+	// FileFlag is the config file from flag()
+	FileFlag = flag.String("config", FileName, "Config file")
 )
 
 // Load configuration
-func Load(config *string) (*ConfigFile, error) {
-	configFile := ConfigFile{
+func Load(config *string) (*File, error) {
+	configFile := File{
 		filename: filepath.Join("./", *config),
 	}
 
@@ -60,7 +61,7 @@ func Load(config *string) (*ConfigFile, error) {
 }
 
 // LoadFromReader yep
-func (configFile *ConfigFile) LoadFromReader(configData io.Reader) error {
+func (configFile *File) LoadFromReader(configData io.Reader) error {
 	if err := json.NewDecoder(configData).Decode(&configFile); err != nil {
 		return err
 	}

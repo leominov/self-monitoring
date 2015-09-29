@@ -13,11 +13,11 @@ vim config.json
 ```
 Run:
 ```shell
-go run *.go
+go run gomon.go
 ```
 Or build:
 ```shell
-go build *.go
+go build gomon.go
 ```
 
 Configuration
@@ -27,8 +27,7 @@ Example with description:
 {
     "interval": 15000, // Update interval in milliseconds
     "notifyAtStart": false, // Send notification with offline services on start
-	"processList": // Process list for monitoring
-    [
+	"processList": [ // Process list for monitoring
         "acrypt",
 		"capella",
 		"docker"
