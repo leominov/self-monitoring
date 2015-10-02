@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -35,13 +36,21 @@ const (
 
 var (
 	// FileFlag is the config file from flag()
-	FileFlag = flag.String("config", FileName, "Config file")
+	FileFlag          = flag.String("config", FileName, "Config file")
+	loadWD, loadWDErr = os.Getwd()
 )
 
 // Load configuration
 func Load(config *string) (*File, error) {
+	if loadWDErr == nil {
+		loadWD = strings.Replace(loadWD, "\\", "/", -1) + "/"
+		if filepath.Dir(*config) == "." {
+			*config = loadWD + *config
+		}
+	}
+
 	configFile := File{
-		filename: filepath.Join("./", *config),
+		filename: *config,
 	}
 
 	if _, err := os.Stat(configFile.filename); err == nil {
