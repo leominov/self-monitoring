@@ -4,9 +4,13 @@ Open init script. Set your workspace directory and config filename.
 ## Usage
 Copy init script:
 ```shell
-cp gomon /etc/init.d/
+sudo cp gomon /etc/init.d/
 ```
-And run:
+Enable start services on a running system:
 ```shell
-init/gomon {start|stop|restart|status}
+sudo rcconf
+```
+Run:
+```shell
+sudo init/gomon {start|stop|restart|status}
 ```
