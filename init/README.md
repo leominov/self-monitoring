@@ -6,7 +6,7 @@ Copy init script:
 ```shell
 sudo cp gomon /etc/init.d/
 ```
-Enable start services on a running system:
+Enable start service on a running system:
 ```shell
 sudo rcconf
 ```
