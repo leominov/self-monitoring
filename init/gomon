@@ -32,7 +32,6 @@ case "$ACTION" in
             exit 1
         fi
 
-        cd $BAMBOO_INSTALL
         nohup $RUN_CMD > $GOMON_LOG 2>&1 & echo $! > $GOMON_PID
 
         echo "Started at `date`"
