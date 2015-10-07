@@ -1,8 +1,6 @@
-Self-monitoring tool (sketch)
-=============================
+# Self-monitoring tool (sketch)
 
-Usage
------
+## Usage
 Install package and dependencies:
 ```shell
 go get github.com/leominov/self-monitoring
@@ -16,17 +14,12 @@ Edit configuration:
 ```shell
 vim config.json
 ```
-Run:
+Install:
 ```shell
-go run gomon.go
-```
-Or build:
-```shell
-go build gomon.go
+sudo ./install-gomon.sh
 ```
 
-Configuration
--------------
+## Configuration
 Example with description:
 ```javascript
 {
