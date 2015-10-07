@@ -31,4 +31,6 @@ fi
 cp gomon $GOMON_WD
 cp $GOMON_CONFIG $GOMON_WD
 
+update-rc.d gomon defaults
+
 $GOMON_INIT start
