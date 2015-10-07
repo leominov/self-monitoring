@@ -4,7 +4,6 @@
 Install package and dependencies:
 ```shell
 go get github.com/leominov/self-monitoring
-cd $GOPATH/src/github.com/leominov/self-monitoring
 ```
 Create own config file:
 ```shell
