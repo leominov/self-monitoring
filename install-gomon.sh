@@ -27,7 +27,7 @@ cp $GOMON_CONFIG $GOMON_WD
 if [ -f $GOMON_INIT ]; then
     $GOMON_INIT stop
 else
-    cp $GOMON_INIT /etc/init.d/
+    cp $GOMON_INIT_SOURCE $GOMON_INIT
 fi
 
 $GOMON_INIT start
