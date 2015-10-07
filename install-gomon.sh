@@ -5,6 +5,7 @@ GOMON_WD="/opt/self-monitoring/"
 GOMON_INIT="/etc/init.d/gomon"
 GOMON_INIT_SOURCE="init/gomon"
 GOMON_CONFIG="config.json"
+GOMON_BINARY="gomon"
 
 export GOMON_WD
 
@@ -21,13 +22,13 @@ if [ ! -d $GOMON_WD ]; then
     mkdir -p $GOMON_WD
 fi
 
-cp gomon $GOMON_WD
-cp $GOMON_CONFIG $GOMON_WD
-
 if [ -f $GOMON_INIT ]; then
     $GOMON_INIT stop
 else
     cp $GOMON_INIT_SOURCE $GOMON_INIT
 fi
+
+cp gomon $GOMON_WD
+cp $GOMON_CONFIG $GOMON_WD
 
 $GOMON_INIT start
