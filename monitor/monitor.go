@@ -29,6 +29,7 @@ type Monitor struct {
 	ServiceList        []Service
 	ListOn, ListOff    []string
 	Counter            int
+	// Telegram           *tgbotapi.BotAPI
 }
 
 // Prepare parameters
