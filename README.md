@@ -29,12 +29,11 @@ Example with description:
 		"capella",
 		"docker"
     ],
-    "logger": true, // Print status info in log
+    "logLevel": "info", // Logger level (debug, info, warning, error, fatal, panic)
     "telegram": {
         "enable": true, // Enable Telegram notification
         "token": "", // Telegram Bot API Token
-        "contactID": 0, // Contact ID (user, chat, etc.)
-        "debug": false // Print debug info
+        "contactID": 0 // Contact ID (user, chat, etc.)
     }
 }
 ```
