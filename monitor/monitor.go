@@ -7,8 +7,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/leominov/self-monitoring/config"
+)
+
+var (
+	msgText, msgType string
 )
 
 // Service structure
@@ -71,11 +76,17 @@ func (monitor *Monitor) CheckStatusList() []Service {
 // RunLogger service status
 func (monitor *Monitor) RunLogger() error {
 	if len(monitor.ListOn) > 0 {
-		log.Printf("%s switch status to ON\n", strings.Join(append(monitor.ListOn), ", "))
+		msgText = strings.Join(append(monitor.ListOn), ", ")
+		msgType = "ON"
 	}
 
 	if len(monitor.ListOff) > 0 {
-		log.Printf("%s switch status to OFF\n", strings.Join(append(monitor.ListOff), ", "))
+		msgText = strings.Join(append(monitor.ListOff), ", ")
+		msgType = "ON"
+	}
+
+	if msgText != "" {
+		logrus.Infof("%s switch status to %s", msgText, msgType)
 	}
 
 	return nil
@@ -86,7 +97,7 @@ func (monitor *Monitor) RunTelegram() error {
 	telegram := &monitor.Config.Telegram
 
 	if telegram.Token == "" || telegram.ContactID == 0 {
-		log.Print("Check Telegram config parameters: token, contactID")
+		logrus.Debug("Check Telegram config parameters: token, contactID")
 		return fmt.Errorf("Error Telegram configuration")
 	}
 
@@ -96,16 +107,26 @@ func (monitor *Monitor) RunTelegram() error {
 		return err
 	}
 
-	bot.Debug = telegram.Debug
+	if logrus.GetLevel() == logrus.DebugLevel {
+		bot.Debug = true
+	}
 
 	if len(monitor.ListOn) > 0 {
-		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf("%s switch status to ON", strings.Join(append(monitor.ListOn), ", ")))
-		bot.SendMessage(msg)
+		msgText = strings.Join(append(monitor.ListOn), ", ")
+		msgType = "ON"
 	}
 
 	if len(monitor.ListOff) > 0 {
-		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf("%s switch status to OFF", strings.Join(append(monitor.ListOff), ", ")))
-		bot.SendMessage(msg)
+		msgText = strings.Join(append(monitor.ListOff), ", ")
+		msgType = "OFF"
+	}
+
+	if msgText != "" {
+		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf("%s switch status to %s", msgText, msgType))
+
+		if _, err := bot.SendMessage(msg); err != nil {
+			return fmt.Errorf("Error sending message: %s", err)
+		}
 	}
 
 	return nil
@@ -132,13 +153,11 @@ func (monitor *Monitor) Notify() {
 		return
 	}
 
-	if monitor.Config.Logger {
-		monitor.RunLogger()
-	}
+	monitor.RunLogger()
 
 	if monitor.Config.Telegram.Enable {
 		if err := monitor.RunTelegram(); err != nil {
-			log.Panic(err)
+			logrus.Error(err)
 		}
 	}
 }
@@ -151,6 +170,8 @@ func (monitor *Monitor) EmptyTemp() {
 
 // Run monitor
 func (monitor *Monitor) Run() {
+	logrus.Debug("Starting Gomon...")
+
 	monitor.Prepare()
 
 	for {

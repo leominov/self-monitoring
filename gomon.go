@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"log"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/leominov/self-monitoring/config"
 	"github.com/leominov/self-monitoring/monitor"
 )
@@ -11,9 +11,10 @@ import (
 func main() {
 	flag.Parse()
 	config, err := config.Load(config.FileFlag)
+	config.ParseLoggerFlags()
 
 	if err != nil {
-		log.Panic(err)
+		logrus.Errorf("Error configuring application: %s", err)
 		return
 	}
 

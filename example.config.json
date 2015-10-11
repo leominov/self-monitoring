@@ -20,7 +20,7 @@
         "vsftpd",
         "sockd"
     ],
-    "logger": true,
+    "logLevel": "info",
     "telegram": {
         "enable": false,
         "token": "",
