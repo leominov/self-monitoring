@@ -24,7 +24,6 @@
     "telegram": {
         "enable": false,
         "token": "",
-        "contactID": 0,
-        "debug": true
+        "contactID": 0
     }
 }

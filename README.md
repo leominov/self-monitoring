@@ -31,7 +31,7 @@ Example with description:
     ],
     "logLevel": "info", // Logger level (debug, info, warning, error, fatal, panic)
     "telegram": {
-        "enable": true, // Enable Telegram notification
+        "enable": false, // Enable Telegram notification
         "token": "", // Telegram Bot API Token
         "contactID": 0 // Contact ID (user, chat, etc.)
     }
