@@ -83,7 +83,7 @@ func (monitor *Monitor) RunLogger() error {
 
 	if len(monitor.ListOff) > 0 {
 		msgText = strings.Join(append(monitor.ListOff), ", ")
-		msgType = "ON"
+		msgType = "OFF"
 	}
 
 	if msgText != "" {
@@ -165,6 +165,7 @@ func (monitor *Monitor) Notify() {
 
 // EmptyTemp data
 func (monitor *Monitor) EmptyTemp() {
+	msgText = ""
 	monitor.ListOn = []string{}
 	monitor.ListOff = []string{}
 }
