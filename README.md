@@ -22,6 +22,7 @@ sudo ./install-gomon.sh
 Example with description:
 ```javascript
 {
+    "nodeName": "local", // Alias for logs and messages
     "interval": 15000, // Update interval in milliseconds
     "notifyAtStart": false, // Send notification with offline services on start
 	"processList": [ // Process list for monitoring
