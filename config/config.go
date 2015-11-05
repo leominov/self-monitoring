@@ -27,6 +27,7 @@ type File struct {
 	Interval      time.Duration  `json:"interval,omitempty"`
 	NotifyAtStart bool           `json:"notifyAtStart,omitempty"`
 	LogLevel      string         `json:"logLevel,omitempty"`
+	NodeName      string         `json:"nodeName,omitempty"`
 	filename      string
 }
 

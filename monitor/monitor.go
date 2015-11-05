@@ -16,6 +16,10 @@ var (
 	msgText, msgType string
 )
 
+const (
+	msgMask = "%s%s switch status to %s"
+)
+
 // Service structure
 type Service struct {
 	Name                   string
@@ -41,6 +45,16 @@ func (monitor *Monitor) Prepare() {
 	}
 
 	monitor.ServiceList = serviceList
+}
+
+// GetPrefix for messages
+func (monitor *Monitor) GetPrefix() string {
+	prefixName := ""
+	if monitor.Config.NodeName != "" {
+		prefixName = monitor.Config.NodeName + ": "
+	}
+
+	return prefixName
 }
 
 // UpdateServiceList getting current process list
@@ -87,7 +101,7 @@ func (monitor *Monitor) RunLogger() error {
 	}
 
 	if msgText != "" {
-		logrus.Infof("%s switch status to %s", msgText, msgType)
+		logrus.Infof(msgMask, monitor.GetPrefix(), msgText, msgType)
 	}
 
 	return nil
@@ -102,7 +116,7 @@ func (monitor *Monitor) RunTelegram() error {
 		return fmt.Errorf("Error Telegram configuration")
 	}
 
-	bot, err := tgbotapi.NewBotAPI(monitor.Config.Telegram.Token)
+	bot, err := tgbotapi.NewBotAPI(telegram.Token)
 
 	if err != nil {
 		return err
@@ -123,7 +137,7 @@ func (monitor *Monitor) RunTelegram() error {
 	}
 
 	if msgText != "" {
-		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf("%s switch status to %s", msgText, msgType))
+		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf(msgMask, monitor.GetPrefix(), msgText, msgType))
 
 		if _, err := bot.SendMessage(msg); err != nil {
 			return fmt.Errorf("Error sending message: %s", err)
