@@ -57,7 +57,7 @@ case "$ACTION" in
     reload)
         if [ -f $GOMON_PID ]
             PID=`cat $GOMON_PID 2>/dev/null`
-            $RUN_CMD --signal=reload --pid=$PID
+            $RUN_CMD --signal reload --pid $PID
             exit 0
         else
             echo "Currently not running."

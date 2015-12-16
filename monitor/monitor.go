@@ -240,6 +240,7 @@ func (monitor *Monitor) Run() {
 
 			case msignal.InfoSignal:
 				logrus.Infoln("Counter:", monitor.Counter)
+				logrus.Infoln("Service list:", monitor.ServiceList)
 
 			default:
 				logrus.Infoln("Catched unknown signal")
