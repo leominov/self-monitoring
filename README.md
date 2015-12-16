@@ -18,6 +18,12 @@ Install:
 sudo ./install-gomon.sh
 ```
 
+## Special service commands
+Reload configuration:
+```shell
+service gomon reload
+```
+
 ## Configuration
 Example with description:
 ```javascript
