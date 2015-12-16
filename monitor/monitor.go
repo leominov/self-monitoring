@@ -2,7 +2,7 @@ package monitor
 
 import (
 	"fmt"
-	"log"
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -10,6 +10,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/leominov/self-monitoring/config"
+	"github.com/leominov/self-monitoring/msignal"
 )
 
 var (
@@ -36,8 +37,8 @@ type Monitor struct {
 	// Telegram           *tgbotapi.BotAPI
 }
 
-// Prepare parameters
-func (monitor *Monitor) Prepare() {
+// PrepareServiceList for list
+func (monitor *Monitor) PrepareServiceList() {
 	serviceList := []Service{}
 
 	for _, name := range monitor.Config.ProcessList {
@@ -184,28 +185,68 @@ func (monitor *Monitor) EmptyTemp() {
 	monitor.ListOff = []string{}
 }
 
+// Configure monitor
+func (monitor *Monitor) Configure() {
+	config, err := config.Load(config.FileFlag)
+	config.ParseLoggerFlags()
+
+	if err != nil {
+		logrus.Errorf("Error configuring application: %s", err)
+		return
+	}
+
+	monitor.Config = config
+}
+
 // Run monitor
 func (monitor *Monitor) Run() {
 	logrus.Debug("Starting Gomon...")
+	logrus.Debugln("Rinning with PID:", os.Getpid())
 
-	monitor.Prepare()
+	monitor.PrepareServiceList()
 
-	for {
-		monitor.Counter++
-		err := monitor.UpdateServiceList()
+	go func() {
+		for {
+			monitor.Counter++
+			err := monitor.UpdateServiceList()
 
-		if err != nil {
-			log.Print(err)
-			continue
+			if err != nil {
+				logrus.Info(err)
+				continue
+			}
+
+			monitor.CheckStatusList()
+
+			monitor.Switch()
+			monitor.Notify()
+
+			monitor.EmptyTemp()
+
+			time.Sleep(monitor.Config.Interval * time.Millisecond)
+
+			s := <-msignal.SignalChan
+			switch s {
+			case msignal.ReloadSignal:
+				logrus.Infoln("Reloading configuration...")
+
+				monitor.Configure()
+				monitor.PrepareServiceList()
+
+				logrus.Infoln("Done.")
+
+			case msignal.QuitSignal:
+				logrus.Infoln("Received shutdown signal")
+				msignal.ExitChan <- 0
+
+			case msignal.InfoSignal:
+				logrus.Infoln("Counter:", monitor.Counter)
+
+			default:
+				logrus.Infoln("Catched unknown signal")
+			}
 		}
+	}()
 
-		monitor.CheckStatusList()
-
-		monitor.Switch()
-		monitor.Notify()
-
-		monitor.EmptyTemp()
-
-		time.Sleep(monitor.Config.Interval * time.Millisecond)
-	}
+	code := <-msignal.ExitChan
+	os.Exit(code)
 }

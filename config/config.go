@@ -37,10 +37,15 @@ const (
 )
 
 var (
+	// SignalFlag is type signal for sending
+	SignalFlag = flag.String("signal", "", "Signal type")
+	// PidFlag is PID for sending signals
+	PidFlag = flag.Int("pid", 0, "Process ID")
 	// FileFlag is the config file from flag()
 	FileFlag = flag.String("config", FileName, "Config file")
 	// DebugFlag global mode
-	DebugFlag         = flag.Bool("debug", false, "Enable debug mode")
+	DebugFlag = flag.Bool("debug", false, "Enable debug mode")
+
 	loadWD, loadWDErr = os.Getwd()
 )
 

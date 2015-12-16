@@ -3,23 +3,16 @@ package main
 import (
 	"flag"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/leominov/self-monitoring/config"
 	"github.com/leominov/self-monitoring/monitor"
+	"github.com/leominov/self-monitoring/msignal"
 )
 
 func main() {
 	flag.Parse()
-	config, err := config.Load(config.FileFlag)
-	config.ParseLoggerFlags()
-
-	if err != nil {
-		logrus.Errorf("Error configuring application: %s", err)
-		return
-	}
+	msignal.CatchSender()
 
 	monitor := monitor.Monitor{}
-	monitor.Config = config
 
+	monitor.Configure()
 	monitor.Run()
 }
