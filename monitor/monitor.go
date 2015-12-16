@@ -25,7 +25,7 @@ const (
 type Service struct {
 	Name                   string
 	CurrentState, NewState bool
-	DateWatch, DateUpdate  time.Time
+	DateWatch, DateUpdate  int32
 }
 
 // Monitor structure
@@ -47,8 +47,8 @@ func (monitor *Monitor) PrepareServiceList() {
 			name,
 			true,
 			false,
-			time.Now(),
-			time.Now(),
+			int32(time.Now().Unix()),
+			0,
 		})
 	}
 
@@ -165,7 +165,10 @@ func (monitor *Monitor) Switch() {
 				monitor.ListOff = append(monitor.ListOff, service.Name)
 			}
 
-			monitor.ServiceList[ID].DateUpdate = time.Now()
+			if monitor.Counter > 1 {
+				monitor.ServiceList[ID].DateUpdate = int32(time.Now().Unix())
+			}
+
 			monitor.ServiceList[ID].CurrentState = service.NewState
 		}
 	}
