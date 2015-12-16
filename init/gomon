@@ -2,7 +2,7 @@
 
 usage()
 {
-    echo "Usage: $0 {start|stop|restart|status}"
+    echo "Usage: $0 {start|stop|restart|reload|status}"
     exit 1
 }
 
@@ -52,6 +52,17 @@ case "$ACTION" in
         $0 stop $*
         sleep 5
         $0 start $*
+        ;;
+
+    reload)
+        if [ -f $GOMON_PID ]
+            PID=`cat $GOMON_PID 2>/dev/null`
+            $RUN_CMD --signal=reload --pid=$PID
+            exit 0
+        else
+            echo "Currently not running."
+        fi
+        exit 1
         ;;
 
     status)
