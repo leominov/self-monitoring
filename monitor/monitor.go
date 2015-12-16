@@ -25,6 +25,7 @@ const (
 type Service struct {
 	Name                   string
 	CurrentState, NewState bool
+	DateWatch, DateUpdate  time.Time
 }
 
 // Monitor structure
@@ -42,7 +43,13 @@ func (monitor *Monitor) PrepareServiceList() {
 	serviceList := []Service{}
 
 	for _, name := range monitor.Config.ProcessList {
-		serviceList = append(serviceList, Service{name, true, false})
+		serviceList = append(serviceList, Service{
+			name,
+			true,
+			false,
+			time.Now(),
+			time.Now(),
+		})
 	}
 
 	monitor.ServiceList = serviceList
@@ -158,6 +165,7 @@ func (monitor *Monitor) Switch() {
 				monitor.ListOff = append(monitor.ListOff, service.Name)
 			}
 
+			monitor.ServiceList[ID].DateUpdate = time.Now()
 			monitor.ServiceList[ID].CurrentState = service.NewState
 		}
 	}
@@ -198,6 +206,55 @@ func (monitor *Monitor) Configure() {
 	monitor.Config = config
 }
 
+// MonitorRoutine loop
+func (monitor *Monitor) MonitorRoutine() {
+	for {
+		monitor.Counter++
+		err := monitor.UpdateServiceList()
+
+		if err != nil {
+			logrus.Info(err)
+			continue
+		}
+
+		monitor.CheckStatusList()
+
+		monitor.Switch()
+		monitor.Notify()
+
+		monitor.EmptyTemp()
+
+		time.Sleep(monitor.Config.Interval * time.Millisecond)
+	}
+}
+
+// SignalRoutine loop
+func (monitor *Monitor) SignalRoutine() {
+	for {
+		s := <-msignal.SignalChan
+		switch s {
+		case msignal.ReloadSignal:
+			logrus.Infoln("Reloading configuration...")
+
+			monitor.Configure()
+			monitor.PrepareServiceList()
+
+			logrus.Infoln("Done.")
+
+		case msignal.QuitSignal:
+			logrus.Infoln("Received shutdown signal")
+			msignal.ExitChan <- 0
+
+		case msignal.InfoSignal:
+			logrus.Infoln("Counter:", monitor.Counter)
+			logrus.Infoln("Service list:", monitor.ServiceList)
+
+		default:
+			logrus.Infoln("Catched unknown signal")
+		}
+	}
+}
+
 // Run monitor
 func (monitor *Monitor) Run() {
 	logrus.Debug("Starting Gomon...")
@@ -205,48 +262,8 @@ func (monitor *Monitor) Run() {
 
 	monitor.PrepareServiceList()
 
-	go func() {
-		for {
-			monitor.Counter++
-			err := monitor.UpdateServiceList()
-
-			if err != nil {
-				logrus.Info(err)
-				continue
-			}
-
-			monitor.CheckStatusList()
-
-			monitor.Switch()
-			monitor.Notify()
-
-			monitor.EmptyTemp()
-
-			time.Sleep(monitor.Config.Interval * time.Millisecond)
-
-			s := <-msignal.SignalChan
-			switch s {
-			case msignal.ReloadSignal:
-				logrus.Infoln("Reloading configuration...")
-
-				monitor.Configure()
-				monitor.PrepareServiceList()
-
-				logrus.Infoln("Done.")
-
-			case msignal.QuitSignal:
-				logrus.Infoln("Received shutdown signal")
-				msignal.ExitChan <- 0
-
-			case msignal.InfoSignal:
-				logrus.Infoln("Counter:", monitor.Counter)
-				logrus.Infoln("Service list:", monitor.ServiceList)
-
-			default:
-				logrus.Infoln("Catched unknown signal")
-			}
-		}
-	}()
+	go monitor.MonitorRoutine()
+	go monitor.SignalRoutine()
 
 	code := <-msignal.ExitChan
 	os.Exit(code)
