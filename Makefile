@@ -12,4 +12,4 @@ install:
 	@./install-gomon.sh
 
 autogen:
-	@./.autogen.sh
+	@./.autogen
