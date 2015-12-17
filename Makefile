@@ -3,7 +3,7 @@
 all: build
 
 run:
-	@go run *.go
+	@go run gomon.go
 
 build:
-	@go build *.go
+	@go build gomon.go
