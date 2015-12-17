@@ -15,7 +15,7 @@ vim config.json
 ```
 Install:
 ```shell
-sudo ./install-gomon.sh
+sudo make install
 ```
 
 ## Special service commands
