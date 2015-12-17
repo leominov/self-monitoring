@@ -10,6 +10,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/leominov/self-monitoring/config"
+	"github.com/leominov/self-monitoring/gomonversion"
 	"github.com/leominov/self-monitoring/msignal"
 )
 
@@ -260,7 +261,7 @@ func (monitor *Monitor) SignalRoutine() {
 
 // Run monitor
 func (monitor *Monitor) Run() {
-	logrus.Debug("Starting Gomon...")
+	logrus.Debugf("Starting Gomon %s...", gomonversion.Version)
 	logrus.Debugln("Rinning with PID:", os.Getpid())
 
 	monitor.PrepareServiceList()

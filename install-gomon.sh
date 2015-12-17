@@ -15,7 +15,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 if [ ! -f $GOMON_BINARY ]; then
-    go build gomon.go
+    make build
 fi
 
 if [ ! -d $GOMON_WD ]; then
