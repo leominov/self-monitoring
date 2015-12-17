@@ -1,4 +1,4 @@
-.PHONY: all run
+.PHONY: all run build
 
 all: build
 
