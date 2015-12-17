@@ -1,4 +1,4 @@
-.PHONY: all run build
+.PHONY: all run build install
 
 all: build
 
@@ -7,3 +7,6 @@ run:
 
 build:
 	@go build gomon.go
+
+install:
+	@./install-gomon.sh
