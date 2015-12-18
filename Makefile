@@ -2,8 +2,8 @@
 
 all: build
 
-run:
-	@go run gomon.go
+run: autogen
+	@go run -tags "autogen" gomon.go
 
 build: autogen
 	@go build -tags "autogen" gomon.go
