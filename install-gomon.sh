@@ -9,8 +9,13 @@ GOMON_BINARY="gomon"
 
 export GOMON_WD
 
+if [ ! "$GOPATH" ]; then
+	echo >&2 "ERROR: Missing GOPATH; please see https://golang.org/doc/code.html#GOPATH"
+	exit 1
+fi
+
 if [[ $EUID -ne 0 ]]; then
-    echo "ERROR: Must be run with root privileges."
+    echo >&2 "ERROR: Must be run with root privileges."
     exit 1
 fi
 
