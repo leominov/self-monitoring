@@ -16,6 +16,8 @@ import (
 
 var (
 	msgText, msgType string
+	// Gomon instance
+	Gomon = Monitor{}
 )
 
 const (
@@ -208,6 +210,7 @@ func (monitor *Monitor) Configure() {
 	}
 
 	monitor.Config = config
+	monitor.PrepareServiceList()
 }
 
 // MonitorRoutine loop
@@ -239,10 +242,7 @@ func (monitor *Monitor) SignalRoutine() {
 		switch s {
 		case msignal.ReloadSignal:
 			logrus.Infoln("Reloading configuration...")
-
 			monitor.Configure()
-			monitor.PrepareServiceList()
-
 			logrus.Infoln("Done.")
 
 		case msignal.QuitSignal:
@@ -261,10 +261,10 @@ func (monitor *Monitor) SignalRoutine() {
 
 // Run monitor
 func (monitor *Monitor) Run() {
-	logrus.Debugf("Starting Gomon %s...", gomonversion.Version)
-	logrus.Debugln("Rinning with PID:", os.Getpid())
+	msignal.CatchSender()
 
-	monitor.PrepareServiceList()
+	logrus.Debugf("Starting Gomon %s...", gomonversion.Version)
+	logrus.Debugf("Rinning with PID: %d", os.Getpid())
 
 	go monitor.MonitorRoutine()
 	go monitor.SignalRoutine()
