@@ -28,12 +28,6 @@ var (
 // CatchSender for catching signar request
 func CatchSender() {
 	if *config.SignalFlag != "" {
-		// if _, err := os.Stat("/var/lock/gomon.pid"); err == nil {
-		// 	if dat, err := ioutil.ReadFile("/var/lock/gomon.pid"); err == nil {
-		// 		fmt.Print(string(dat))
-		// 	}
-		// }
-
 		p, err := os.FindProcess(*config.PidFlag)
 		if err != nil {
 			logrus.Errorf("Error sending signal: %s", err)
