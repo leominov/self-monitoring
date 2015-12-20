@@ -24,37 +24,37 @@ var (
 	SignalChan = make(chan os.Signal, 1)
 	// ExitChan for exit chan
 	ExitChan = make(chan int)
-	errSign  error
 )
 
 // CatchSender for catching signar request
 func CatchSender() (bool, error) {
 	if *config.SignalFlag != "" {
-		p, err := os.FindProcess(*config.PidFlag)
+		var err error
+		var p *os.Process
+
+		p, err = os.FindProcess(*config.PidFlag)
 
 		if err != nil {
 			return false, err
 		}
 
 		if p.Pid == 0 {
-			err := fmt.Errorf("Process with pid %d not found", *config.PidFlag)
-			return false, err
+			return false, fmt.Errorf("Process with pid %d not found", *config.PidFlag)
 		}
 
 		switch *config.SignalFlag {
 		case "reload":
-			errSign = p.Signal(ReloadSignal)
+			err = p.Signal(ReloadSignal)
 		case "quit":
-			errSign = p.Signal(QuitSignal)
+			err = p.Signal(QuitSignal)
 		case "info":
-			errSign = p.Signal(InfoSignal)
+			err = p.Signal(InfoSignal)
 		default:
 			return false, errors.New("Unknown signal")
 		}
 
-		if errSign != nil {
-			err := fmt.Errorf("Error sending signal: %v", errSign)
-			return false, err
+		if err != nil {
+			return false, fmt.Errorf("Error sending signal: %v", err)
 		}
 
 		return true, nil
