@@ -202,12 +202,13 @@ func (monitor *Monitor) EmptyTemp() {
 // Configure monitor
 func (monitor *Monitor) Configure() {
 	config, err := config.Load(config.FileFlag)
-	config.ParseLoggerFlags()
 
 	if err != nil {
 		logrus.Errorf("Error configuring application: %v", err)
 		return
 	}
+
+	config.ParseLoggerFlags()
 
 	monitor.Config = config
 	monitor.PrepareServiceList()
