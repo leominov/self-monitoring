@@ -1,11 +1,12 @@
 package msignal
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/leominov/self-monitoring/config"
 )
 
@@ -23,31 +24,46 @@ var (
 	SignalChan = make(chan os.Signal, 1)
 	// ExitChan for exit chan
 	ExitChan = make(chan int)
+	errSign  error
 )
 
 // CatchSender for catching signar request
-func CatchSender() {
+func CatchSender() (bool, error) {
 	if *config.SignalFlag != "" {
 		p, err := os.FindProcess(*config.PidFlag)
+
 		if err != nil {
-			logrus.Errorf("Error sending signal: %s", err)
+			return false, err
+		}
+
+		if p.Pid == 0 {
+			err := fmt.Errorf("Process with pid %d not found", *config.PidFlag)
+			return false, err
 		}
 
 		switch *config.SignalFlag {
 		case "reload":
-			p.Signal(ReloadSignal)
+			errSign = p.Signal(ReloadSignal)
 		case "quit":
-			p.Signal(QuitSignal)
+			errSign = p.Signal(QuitSignal)
 		case "info":
-			p.Signal(InfoSignal)
+			errSign = p.Signal(InfoSignal)
+		default:
+			return false, errors.New("Unknown signal")
 		}
 
-		logrus.Info("OK")
-		os.Exit(0)
+		if errSign != nil {
+			err := fmt.Errorf("Error sending signal: %v", errSign)
+			return false, err
+		}
+
+		return true, nil
 	}
 
 	signal.Notify(SignalChan,
 		InfoSignal,
 		ReloadSignal,
 		QuitSignal)
+
+	return false, nil
 }

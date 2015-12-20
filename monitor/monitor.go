@@ -151,7 +151,7 @@ func (monitor *Monitor) RunTelegram() error {
 		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf(msgMask, monitor.GetPrefix(), msgText, msgType))
 
 		if _, err := bot.SendMessage(msg); err != nil {
-			return fmt.Errorf("Error sending message: %s", err)
+			return fmt.Errorf("Error sending message: %v", err)
 		}
 	}
 
@@ -205,7 +205,7 @@ func (monitor *Monitor) Configure() {
 	config.ParseLoggerFlags()
 
 	if err != nil {
-		logrus.Errorf("Error configuring application: %s", err)
+		logrus.Errorf("Error configuring application: %v", err)
 		return
 	}
 
@@ -261,7 +261,19 @@ func (monitor *Monitor) SignalRoutine() {
 
 // Run monitor
 func (monitor *Monitor) Run() {
-	msignal.CatchSender()
+	catched, err := msignal.CatchSender()
+
+	if err != nil {
+		logrus.Error(err)
+		os.Exit(0)
+	}
+
+	if catched {
+		logrus.Info("Sended")
+		os.Exit(0)
+	}
+
+	logrus.Debug("Debug mode enabled")
 
 	logrus.Debugf("Starting Gomon %s...", gomonversion.Version)
 	logrus.Debugf("Rinning with PID: %d", os.Getpid())
