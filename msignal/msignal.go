@@ -36,9 +36,7 @@ func CatchSender() (bool, error) {
 
 		if err != nil {
 			return false, err
-		}
-
-		if p.Pid == 0 {
+		} else if p.Pid == 0 {
 			return false, fmt.Errorf("Process with pid %d not found", *config.PidFlag)
 		}
 
