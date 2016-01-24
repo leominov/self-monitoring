@@ -48,7 +48,7 @@ func CatchSender() (bool, error) {
 		case "info":
 			err = p.Signal(InfoSignal)
 		default:
-			return false, errors.New("Unknown signal")
+			return false, errors.New("Error sending signal: unknown signal")
 		}
 
 		if err != nil {

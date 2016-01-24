@@ -265,8 +265,7 @@ func (monitor *Monitor) Run() {
 	catched, err := msignal.CatchSender()
 
 	if err != nil {
-		logrus.Error(err)
-		os.Exit(0)
+		logrus.Fatal(err)
 	}
 
 	if catched {
