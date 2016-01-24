@@ -1,5 +1,5 @@
 {
-    "interval": 15000,
+    "interval": "15s",
     "notifyAtStart": true,
     "processList": [
         "acrypt",

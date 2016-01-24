@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/Sirupsen/logrus"
 )
@@ -24,7 +23,7 @@ type TelegramConfig struct {
 type File struct {
 	Telegram      TelegramConfig `json:"telegram,omitempty"`
 	ProcessList   []string       `json:"processList"`
-	Interval      time.Duration  `json:"interval,omitempty"`
+	Interval      string         `json:"interval,omitempty"`
 	NotifyAtStart bool           `json:"notifyAtStart,omitempty"`
 	LogLevel      string         `json:"logLevel,omitempty"`
 	NodeName      string         `json:"nodeName,omitempty"`

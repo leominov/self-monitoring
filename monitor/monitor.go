@@ -216,9 +216,12 @@ func (monitor *Monitor) Configure() {
 
 // MonitorRoutine loop
 func (monitor *Monitor) MonitorRoutine() {
+	var err error
+	var interval time.Duration
+
 	for {
 		monitor.Counter++
-		err := monitor.UpdateServiceList()
+		err = monitor.UpdateServiceList()
 
 		if err != nil {
 			logrus.Info(err)
@@ -232,7 +235,14 @@ func (monitor *Monitor) MonitorRoutine() {
 
 		monitor.EmptyTemp()
 
-		time.Sleep(monitor.Config.Interval * time.Millisecond)
+		interval, err = time.ParseDuration(monitor.Config.Interval)
+
+		if err != nil {
+			logrus.Infof("Error setting interval: %v", err)
+			interval, _ = time.ParseDuration("5s")
+		}
+
+		time.Sleep(interval)
 	}
 }
 
