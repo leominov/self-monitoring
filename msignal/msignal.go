@@ -16,7 +16,7 @@ const (
 	// QuitSignal for exit
 	QuitSignal = syscall.SIGQUIT
 	// InfoSignal for additional information
-	InfoSignal = syscall.SIGINFO
+	InfoSignal = syscall.SIGHUP
 )
 
 var (
