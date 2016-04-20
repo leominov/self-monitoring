@@ -57,8 +57,9 @@ else
     log_verbose "Done"
 fi
 
+log_info "Configuring"
 if [ ! -f "$GOMON_WD/$GOMON_CONFIG" ]; then
-    log_info "Coping config file"
+    log_verbose "Coping config file"
     cp $GOMON_CONFIG $GOMON_WD
     log_verbose "Done"
 else
