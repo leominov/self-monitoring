@@ -5,13 +5,14 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/Syfaro/telegram-bot-api"
 	"github.com/leominov/self-monitoring/config"
 	"github.com/leominov/self-monitoring/gomonversion"
 	"github.com/leominov/self-monitoring/msignal"
+	"gopkg.in/telegram-bot-api.v4"
 )
 
 var (
@@ -150,7 +151,7 @@ func (monitor *Monitor) RunTelegram() error {
 	if msgText != "" {
 		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf(msgMask, monitor.GetPrefix(), msgText, msgType))
 
-		if _, err := bot.SendMessage(msg); err != nil {
+		if _, err := bot.Send(msg); err != nil {
 			return fmt.Errorf("Error sending message: %v", err)
 		}
 	}
@@ -270,6 +271,84 @@ func (monitor *Monitor) SignalRoutine() {
 	}
 }
 
+// Control Gomon by Telegram messages
+func (monitor *Monitor) Control() error {
+	var waitGroup sync.WaitGroup
+	telegram := &monitor.Config.Telegram
+
+	if telegram.Token == "" || telegram.ContactID == 0 {
+		return fmt.Errorf("Error Telegram configuration")
+	}
+
+	bot, err := tgbotapi.NewBotAPI(telegram.Token)
+	if err != nil {
+		return err
+	}
+
+	if logrus.GetLevel() == logrus.DebugLevel {
+		bot.Debug = true
+	}
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates, err := bot.GetUpdatesChan(u)
+	if err != nil {
+		return err
+	}
+
+	for update := range updates {
+		isAdmin := false
+		for _, name := range telegram.AdminList {
+			if update.Message.From.UserName == name {
+				isAdmin = true
+				break
+			}
+		}
+
+		if !isAdmin || update.Message.Chat.Type != "private" {
+			logrus.Errorf(
+				"Access denied to exec '%s' from %s (%s)",
+				update.Message.Text,
+				update.Message.From.UserName,
+				update.Message.Chat.Type,
+			)
+			continue
+		}
+
+		waitGroup.Add(1)
+
+		go func() {
+			logrus.Infof("Exec '%s' from %s", update.Message.Text, update.Message.From.UserName)
+			out, err := ExecCommand(update.Message.Text)
+			message := out
+			if err != nil {
+				message = err.Error()
+			}
+
+			chunks := SplitByChunk(message, 4000)
+			for _, chunk := range chunks {
+				chatID := update.Message.Chat.ID
+				if len(chunks) > 1 {
+					bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+					time.Sleep(200 * time.Millisecond)
+				}
+				msg := tgbotapi.NewMessage(chatID, chunk)
+				bot.Send(msg)
+			}
+			waitGroup.Done()
+		}()
+
+		err := TimeoutWait(&waitGroup)
+		if err != nil {
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
+			bot.Send(msg)
+		}
+	}
+
+	return nil
+}
+
 // Run monitor
 func (monitor *Monitor) Run() {
 	catched, err := msignal.CatchSender()
@@ -290,6 +369,7 @@ func (monitor *Monitor) Run() {
 
 	go monitor.MonitorRoutine()
 	go monitor.SignalRoutine()
+	go monitor.Control()
 
 	code := <-msignal.ExitChan
 	os.Exit(code)

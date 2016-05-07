@@ -14,9 +14,10 @@ import (
 
 // TelegramConfig structure
 type TelegramConfig struct {
-	Enable    bool   `json:"enable,omitempty"`
-	Token     string `json:"token,omitempty"`
-	ContactID int    `json:"contactID,omitempty"`
+	Enable    bool     `json:"enable,omitempty"`
+	Token     string   `json:"token,omitempty"`
+	ContactID int64    `json:"contactID,omitempty"`
+	AdminList []string `json:"admins,omitempty"`
 }
 
 // File structure

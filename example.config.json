@@ -24,6 +24,7 @@
     "telegram": {
         "enable": false,
         "token": "",
-        "contactID": 0
+        "contactID": 0,
+        "admins": []
     }
 }

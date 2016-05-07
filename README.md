@@ -40,7 +40,8 @@ Example with description:
     "telegram": {
         "enable": false, // Enable Telegram notification
         "token": "", // Telegram Bot API Token
-        "contactID": 0 // Contact ID (user, chat, etc.)
+        "contactID": 0, // Contact ID (user, chat, etc.)
+        "admins": [] // Admin list to control monitoring
     }
 }
 ```
