@@ -351,15 +351,22 @@ func (monitor *Monitor) Control() error {
 		commandArgs := update.Message.CommandArguments()
 		chatID := update.Message.Chat.ID
 
+		/*
+			sh - Exec shell command
+			service - Alias for /sh service
+			calc - Calculator
+			up - Server uptime
+			status - Monitoring status
+		*/
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
 			ExecAndNotice(bot, chatID, commandArgs)
 		case "service", "srv":
-			ExecAndNotice(bot, chatID, fmt.Sprintf("%s %s", command, commandArgs))
+			ExecAndNotice(bot, chatID, fmt.Sprintf("%s %s", "service", commandArgs))
 		case "bc", "calc":
 			ExecAndNotice(bot, chatID, fmt.Sprintf("echo '%s' | bc", commandArgs))
 		case "up", "uptime":
-			ExecAndNotice(bot, chatID, command)
+			ExecAndNotice(bot, chatID, "uptime")
 		case "st", "status":
 			bot.Send(tgbotapi.NewMessage(chatID, "Up"))
 		}
