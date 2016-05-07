@@ -361,6 +361,7 @@ func (monitor *Monitor) Control() error {
 			calc - Calculator
 			up - Server uptime
 			status - Service list
+			who - Who is logged in
 		*/
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
@@ -369,6 +370,8 @@ func (monitor *Monitor) Control() error {
 			ExecAndNotice(bot, chatID, fmt.Sprintf("%s %s", "service", commandArgs))
 		case "bc", "calc":
 			ExecAndNotice(bot, chatID, fmt.Sprintf("echo '%s' | bc", commandArgs))
+		case "who":
+			ExecAndNotice(bot, chatID, "who")
 		case "up", "uptime":
 			ExecAndNotice(bot, chatID, "uptime")
 		case "st", "status":
