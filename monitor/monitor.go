@@ -22,7 +22,11 @@ var (
 )
 
 const (
-	msgMask = "%s%s switch status to %s"
+	// StateON for service
+	StateON = "ON"
+	// StateOFF for service
+	StateOFF = "OFF"
+	msgMask  = "%s%s switch status to %s"
 )
 
 // Service structure
@@ -104,12 +108,12 @@ func (monitor *Monitor) CheckStatusList() []Service {
 func (monitor *Monitor) RunLogger() error {
 	if len(monitor.ListOn) > 0 {
 		msgText = strings.Join(append(monitor.ListOn), ", ")
-		msgType = "ON"
+		msgType = StateON
 	}
 
 	if len(monitor.ListOff) > 0 {
 		msgText = strings.Join(append(monitor.ListOff), ", ")
-		msgType = "OFF"
+		msgType = StateOFF
 	}
 
 	if msgText != "" {
@@ -140,12 +144,12 @@ func (monitor *Monitor) RunTelegram() error {
 
 	if len(monitor.ListOn) > 0 {
 		msgText = strings.Join(append(monitor.ListOn), ", ")
-		msgType = "ON"
+		msgType = StateON
 	}
 
 	if len(monitor.ListOff) > 0 {
 		msgText = strings.Join(append(monitor.ListOff), ", ")
-		msgType = "OFF"
+		msgType = StateOFF
 	}
 
 	if msgText != "" {
@@ -368,7 +372,17 @@ func (monitor *Monitor) Control() error {
 		case "up", "uptime":
 			ExecAndNotice(bot, chatID, "uptime")
 		case "st", "status":
-			bot.Send(tgbotapi.NewMessage(chatID, "Up"))
+			pref := ""
+			status := ""
+			for _, service := range monitor.ServiceList {
+				state := StateON
+				if service.CurrentState == false {
+					state = StateOFF
+				}
+				status += pref + fmt.Sprintf("%s is %s", service.Name, state)
+				pref = "\n"
+			}
+			bot.Send(tgbotapi.NewMessage(chatID, status))
 		}
 	}
 
