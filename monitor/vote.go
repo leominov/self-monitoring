@@ -1,6 +1,9 @@
 package monitor
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 const (
 	// SignLike for voting
@@ -16,5 +19,8 @@ func GetVote() string {
 		SignDislike,
 	}
 
-	return signs[rand.Intn(len(signs))]
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+
+	return signs[r.Intn(len(signs))]
 }
