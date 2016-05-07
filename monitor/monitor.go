@@ -360,7 +360,7 @@ func (monitor *Monitor) Control() error {
 			service - Alias for /sh service
 			calc - Calculator
 			up - Server uptime
-			status - Monitoring status
+			status - Service list
 		*/
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
@@ -375,10 +375,15 @@ func (monitor *Monitor) Control() error {
 			pref := ""
 			status := ""
 			for _, service := range monitor.ServiceList {
+				if commandArgs != "" && commandArgs != service.Name {
+					continue
+				}
+
 				state := StateON
 				if service.CurrentState == false {
 					state = StateOFF
 				}
+
 				status += pref + fmt.Sprintf("%s is %s", service.Name, state)
 				pref = "\n"
 			}
