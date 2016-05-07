@@ -354,6 +354,8 @@ func (monitor *Monitor) Control() error {
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
 			ExecAndNotice(bot, chatID, commandArgs)
+		case "service", "srv":
+			ExecAndNotice(bot, chatID, fmt.Sprintf("%s %s", command, commandArgs))
 		case "bc", "calc":
 			ExecAndNotice(bot, chatID, fmt.Sprintf("echo '%s' | bc", commandArgs))
 		case "up", "uptime":
