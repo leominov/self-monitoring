@@ -370,7 +370,7 @@ func (monitor *Monitor) Control() error {
 			ExecAndNotice(bot, chatID, fmt.Sprintf("%s %s", "service", commandArgs))
 		case "bc", "calc":
 			ExecAndNotice(bot, chatID, fmt.Sprintf("echo '%s' | bc", commandArgs))
-		case "who":
+		case "w", "who":
 			ExecAndNotice(bot, chatID, "who")
 		case "up", "uptime":
 			ExecAndNotice(bot, chatID, "uptime")
@@ -391,6 +391,8 @@ func (monitor *Monitor) Control() error {
 				pref = "\n"
 			}
 			bot.Send(tgbotapi.NewMessage(chatID, status))
+		case "v", "vote":
+			bot.Send(tgbotapi.NewMessage(chatID, GetVote()))
 		}
 	}
 
