@@ -271,9 +271,40 @@ func (monitor *Monitor) SignalRoutine() {
 	}
 }
 
+// ExecAndNotice Execute command and Notice
+func ExecAndNotice(bot *tgbotapi.BotAPI, chatID int64, command string) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(1)
+
+	go func() {
+		out, err := ExecCommand(command)
+		message := out
+		if err != nil {
+			message = err.Error()
+		}
+
+		chunks := SplitByChunk(message, 4000)
+		for _, chunk := range chunks {
+			if len(chunks) > 1 {
+				bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+				time.Sleep(200 * time.Millisecond)
+			}
+			msg := tgbotapi.NewMessage(chatID, chunk)
+			bot.Send(msg)
+		}
+		waitGroup.Done()
+	}()
+
+	err := TimeoutWait(&waitGroup)
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, err.Error())
+		bot.Send(msg)
+	}
+}
+
 // Control Gomon by Telegram messages
 func (monitor *Monitor) Control() error {
-	var waitGroup sync.WaitGroup
 	telegram := &monitor.Config.Telegram
 
 	if telegram.Token == "" || telegram.ContactID == 0 {
@@ -318,37 +349,17 @@ func (monitor *Monitor) Control() error {
 
 		command := update.Message.Command()
 		commandArgs := update.Message.CommandArguments()
+		chatID := update.Message.Chat.ID
 
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
-			waitGroup.Add(1)
-
-			go func() {
-				logrus.Infof("Exec '%s' from %s", commandArgs, update.Message.From.UserName)
-				out, err := ExecCommand(commandArgs)
-				message := out
-				if err != nil {
-					message = err.Error()
-				}
-
-				chunks := SplitByChunk(message, 4000)
-				for _, chunk := range chunks {
-					chatID := update.Message.Chat.ID
-					if len(chunks) > 1 {
-						bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-						time.Sleep(200 * time.Millisecond)
-					}
-					msg := tgbotapi.NewMessage(chatID, chunk)
-					bot.Send(msg)
-				}
-				waitGroup.Done()
-			}()
-
-			err := TimeoutWait(&waitGroup)
-			if err != nil {
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
-				bot.Send(msg)
-			}
+			ExecAndNotice(bot, chatID, commandArgs)
+		case "bc", "calc":
+			ExecAndNotice(bot, chatID, fmt.Sprintf("echo '%s' | bc", commandArgs))
+		case "up", "uptime":
+			ExecAndNotice(bot, chatID, command)
+		case "st", "status":
+			bot.Send(tgbotapi.NewMessage(chatID, "Up"))
 		}
 	}
 
