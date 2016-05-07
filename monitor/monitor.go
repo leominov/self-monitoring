@@ -306,7 +306,7 @@ func (monitor *Monitor) Control() error {
 			}
 		}
 
-		if !isAdmin || update.Message.Chat.Type != "private" {
+		if !isAdmin || !update.Message.IsCommand() {
 			logrus.Errorf(
 				"Access denied to exec '%s' from %s (%s)",
 				update.Message.Text,
@@ -316,33 +316,39 @@ func (monitor *Monitor) Control() error {
 			continue
 		}
 
-		waitGroup.Add(1)
+		command := update.Message.Command()
+		commandArgs := update.Message.CommandArguments()
 
-		go func() {
-			logrus.Infof("Exec '%s' from %s", update.Message.Text, update.Message.From.UserName)
-			out, err := ExecCommand(update.Message.Text)
-			message := out
-			if err != nil {
-				message = err.Error()
-			}
+		switch command {
+		case "sh", "bash", "shell", "exec", "run":
+			waitGroup.Add(1)
 
-			chunks := SplitByChunk(message, 4000)
-			for _, chunk := range chunks {
-				chatID := update.Message.Chat.ID
-				if len(chunks) > 1 {
-					bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-					time.Sleep(200 * time.Millisecond)
+			go func() {
+				logrus.Infof("Exec '%s' from %s", commandArgs, update.Message.From.UserName)
+				out, err := ExecCommand(commandArgs)
+				message := out
+				if err != nil {
+					message = err.Error()
 				}
-				msg := tgbotapi.NewMessage(chatID, chunk)
+
+				chunks := SplitByChunk(message, 4000)
+				for _, chunk := range chunks {
+					chatID := update.Message.Chat.ID
+					if len(chunks) > 1 {
+						bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+						time.Sleep(200 * time.Millisecond)
+					}
+					msg := tgbotapi.NewMessage(chatID, chunk)
+					bot.Send(msg)
+				}
+				waitGroup.Done()
+			}()
+
+			err := TimeoutWait(&waitGroup)
+			if err != nil {
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
 				bot.Send(msg)
 			}
-			waitGroup.Done()
-		}()
-
-		err := TimeoutWait(&waitGroup)
-		if err != nil {
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
-			bot.Send(msg)
 		}
 	}
 
