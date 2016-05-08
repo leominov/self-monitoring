@@ -37,7 +37,7 @@ case "$pkgOS" in
         pkgOS=Windows
         ;;
     *)
-        echo >&2 "Error: can't convert $s3Os to an appropriate value for 'uname -s'"
+        echo >&2 "Error: can't convert $pkgOS to an appropriate value for 'uname -s'"
         exit 1
         ;;
 esac
@@ -54,7 +54,7 @@ case "$pkgArch" in
         pkgArch=armel
         ;;
     *)
-        echo >&2 "Error: can't convert $s3Arch to an appropriate value for 'uname -m'"
+        echo >&2 "Error: can't convert $pkgArch to an appropriate value for 'uname -m'"
         exit 1
         ;;
 esac

@@ -2,6 +2,10 @@
 
 VERSION=$(< ./VERSION)
 FILES=./releases/*
+RELEASE_TYPE=$1
+
+echo $RELEASE_TYPE
+exit 0
 
 function github_release() {
     $GOPATH/bin/github-release "$@"
@@ -19,7 +23,7 @@ github_release release \
     --tag "$VERSION" \
     --name "$VERSION" \
     --description "See CHANGES.md" \
-    --pre-release
+    $RELEASE_TYPE
 
 if [ $? -eq 0 ]; then
     notice_release $VERSION
