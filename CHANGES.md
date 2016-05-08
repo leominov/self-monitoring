@@ -7,9 +7,13 @@ Conventions used in this document:
 
 ## Change Log
 
+### 0.1g
+
+* Update release naming.
+
 ### 0.1f
 
-* Add release notice
+* Add release notice.
 
 ### 0.1e
 
