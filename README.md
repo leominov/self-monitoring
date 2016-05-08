@@ -34,6 +34,7 @@ uptime - Server uptime (up)
 status - Service list (st)
 who - Who is logged in (w)
 vote - Random vote (v)
+version - Gomon version (ver)
 ```
 
 ## Configuration
