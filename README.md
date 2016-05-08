@@ -24,6 +24,18 @@ Reload configuration:
 service gomon reload
 ```
 
+## Telegram commands
+
+```
+sh - Exec shell command (shell)
+service - Alias for /sh service (srv)
+calc - Calculator (bc)
+uptime - Server uptime (up)
+status - Service list (st)
+who - Who is logged in (w)
+vote - Random vote (v)
+```
+
 ## Configuration
 Example with description:
 ```javascript
