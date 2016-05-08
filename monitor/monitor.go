@@ -459,7 +459,7 @@ func (monitor *Monitor) Control() error {
 			ExecAndNotice(bot, chatID, "who")
 		case "up", "uptime":
 			ExecAndNotice(bot, chatID, "uptime")
-		case "st", "srvsy", "status":
+		case "st", "srvst", "status":
 			pref := ""
 			status := ""
 			for _, service := range monitor.ServiceList {
