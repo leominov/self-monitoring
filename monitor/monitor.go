@@ -31,6 +31,8 @@ const (
 	StateEmojiON = "✅"
 	// StateEmojiOFF for status
 	StateEmojiOFF = "🆘"
+	// DinamicEmojiPrefix for status
+	DinamicEmojiPrefix = "❕"
 	// StateMessageMask for notice
 	StateMessageMask = "%s%s switch status to %s"
 	// MaxChunkSize for command output
@@ -41,9 +43,12 @@ const (
 
 // Service structure
 type Service struct {
-	Name                   string
-	CurrentState, NewState bool
-	DateWatch, DateUpdate  int32
+	Name         string
+	CurrentState bool
+	NewState     bool
+	DateWatch    int32
+	DateUpdate   int32
+	IsDynamic    bool
 }
 
 // Monitor structure
@@ -57,7 +62,7 @@ type Monitor struct {
 }
 
 // AddService to monitor
-func (monitor *Monitor) AddService(name string) error {
+func (monitor *Monitor) AddService(name string, isDynamic bool) error {
 	if name == "" {
 		return errors.New("Empty service name")
 	}
@@ -74,7 +79,15 @@ func (monitor *Monitor) AddService(name string) error {
 		return fmt.Errorf("Service %s already in list of services", name)
 	}
 
-	service := Service{name, true, false, int32(time.Now().Unix()), 0}
+	service := Service{
+		Name:         name,
+		CurrentState: true,
+		NewState:     false,
+		DateWatch:    int32(time.Now().Unix()),
+		DateUpdate:   0,
+		IsDynamic:    isDynamic,
+	}
+
 	monitor.ServiceList = append(monitor.ServiceList, service)
 
 	return nil
@@ -105,7 +118,7 @@ func (monitor *Monitor) DeleteService(name string) error {
 // PrepareServiceList for list
 func (monitor *Monitor) PrepareServiceList() {
 	for _, name := range monitor.Config.ProcessList {
-		monitor.AddService(name)
+		monitor.AddService(name, false)
 	}
 }
 
@@ -415,7 +428,7 @@ func (monitor *Monitor) Control() error {
 				break
 			}
 
-			err = monitor.AddService(words[0])
+			err = monitor.AddService(words[0], true)
 			if err != nil {
 				bot.Send(tgbotapi.NewMessage(chatID, err.Error()))
 				break
@@ -446,7 +459,7 @@ func (monitor *Monitor) Control() error {
 			ExecAndNotice(bot, chatID, "who")
 		case "up", "uptime":
 			ExecAndNotice(bot, chatID, "uptime")
-		case "st", "status":
+		case "st", "srvsy", "status":
 			pref := ""
 			status := ""
 			for _, service := range monitor.ServiceList {
@@ -459,7 +472,12 @@ func (monitor *Monitor) Control() error {
 					state = StateEmojiOFF
 				}
 
-				status += pref + fmt.Sprintf("%s %s", state, service.Name)
+				source := ""
+				if service.IsDynamic {
+					source = DinamicEmojiPrefix
+				}
+
+				status += pref + fmt.Sprintf("%s %s%s", state, service.Name, source)
 				pref = "\n"
 			}
 			bot.Send(tgbotapi.NewMessage(chatID, status))
