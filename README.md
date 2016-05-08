@@ -1,5 +1,11 @@
 # Self-monitoring tool (sketch)
 
+## Environment variables
+
+* GITHUB_TOKEN - GitHub token for uploading releases;
+* TELEGRAM_API_TOKEN - Telegram token for release notice;
+* TELEGRAM_CHAT_ID - Telegram Chat ID for release notice.
+
 ## Usage
 
 Install package and dependencies:
