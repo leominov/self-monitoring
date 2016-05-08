@@ -1,30 +1,41 @@
 # Self-monitoring tool (sketch)
 
 ## Usage
+
 Install package and dependencies:
+
 ```shell
 go get github.com/leominov/self-monitoring
 ```
+
 Create own config file:
+
 ```shell
 cp example.config.json config.json
 ```
+
 Edit configuration:
+
 ```shell
 vim config.json
 ```
+
 Install:
+
 ```shell
 sudo make install
 ```
 
 ## Special service commands
+
 Reload configuration:
+
 ```shell
 service gomon reload
 ```
 
 ## Telegram commands
+
 ```
 sh - Exec shell command (shell)
 service - Alias for /sh service (srv)
@@ -40,7 +51,9 @@ service-dev - Delete service from monitoring list (srvdel)
 ```
 
 ## Configuration
+
 Example with description:
+
 ```javascript
 {
     "nodeName": "local", // Alias for logs and messages
