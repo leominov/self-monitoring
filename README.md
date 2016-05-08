@@ -25,7 +25,6 @@ service gomon reload
 ```
 
 ## Telegram commands
-
 ```
 sh - Exec shell command (shell)
 service - Alias for /sh service (srv)
@@ -34,7 +33,7 @@ uptime - Server uptime (up)
 status - Service list (st)
 who - Who is logged in (w)
 vote - Random vote (v)
-version - Gomon version (ver)
+version - Monitoring version (ver)
 reload - Reload configuration (rld)
 service-add - Add service to monitoring list (srvadd)
 service-dev - Delete service from monitoring list (srvdel)
