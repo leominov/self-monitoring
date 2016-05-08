@@ -36,6 +36,8 @@ who - Who is logged in (w)
 vote - Random vote (v)
 version - Gomon version (ver)
 reload - Reload configuration (rld)
+service-add - Add service to monitoring list (srvadd)
+service-dev - Delete service from monitoring list (srvdel)
 ```
 
 ## Configuration

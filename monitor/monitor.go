@@ -1,6 +1,7 @@
 package monitor
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -55,21 +56,57 @@ type Monitor struct {
 	// Telegram           *tgbotapi.BotAPI
 }
 
-// PrepareServiceList for list
-func (monitor *Monitor) PrepareServiceList() {
-	serviceList := []Service{}
-
-	for _, name := range monitor.Config.ProcessList {
-		serviceList = append(serviceList, Service{
-			name,
-			true,
-			false,
-			int32(time.Now().Unix()),
-			0,
-		})
+// AddService to monitor
+func (monitor *Monitor) AddService(name string) error {
+	if name == "" {
+		return errors.New("Empty service name")
 	}
 
-	monitor.ServiceList = serviceList
+	inServiceList := false
+	for _, service := range monitor.ServiceList {
+		if service.Name == name {
+			inServiceList = true
+			break
+		}
+	}
+
+	if inServiceList {
+		return fmt.Errorf("Service %s already in list of services", name)
+	}
+
+	service := Service{name, true, false, int32(time.Now().Unix()), 0}
+	monitor.ServiceList = append(monitor.ServiceList, service)
+
+	return nil
+}
+
+// DeleteService from monitor
+func (monitor *Monitor) DeleteService(name string) error {
+	if name == "" {
+		return errors.New("Empty service name")
+	}
+
+	inServiceList := false
+	for i, service := range monitor.ServiceList {
+		if service.Name == name {
+			monitor.ServiceList = append(monitor.ServiceList[:i], monitor.ServiceList[i+1:]...)
+			inServiceList = true
+			break
+		}
+	}
+
+	if !inServiceList {
+		return fmt.Errorf("Service %s not found in list of services", name)
+	}
+
+	return nil
+}
+
+// PrepareServiceList for list
+func (monitor *Monitor) PrepareServiceList() {
+	for _, name := range monitor.Config.ProcessList {
+		monitor.AddService(name)
+	}
 }
 
 // GetPrefix for messages
@@ -371,6 +408,34 @@ func (monitor *Monitor) Control() error {
 		chatID := update.Message.Chat.ID
 
 		switch command {
+		case "srvadd", "service-add":
+			words := strings.Fields(commandArgs)
+			if len(words) == 0 {
+				bot.Send(tgbotapi.NewMessage(chatID, "Empty service name."))
+				break
+			}
+
+			err = monitor.AddService(words[0])
+			if err != nil {
+				bot.Send(tgbotapi.NewMessage(chatID, err.Error()))
+				break
+			}
+
+			bot.Send(tgbotapi.NewMessage(chatID, "Done."))
+		case "srvdel", "service-del", "dervice-delete":
+			words := strings.Fields(commandArgs)
+			if len(words) == 0 {
+				bot.Send(tgbotapi.NewMessage(chatID, "Empty service name."))
+				break
+			}
+
+			err = monitor.DeleteService(commandArgs)
+			if err != nil {
+				bot.Send(tgbotapi.NewMessage(chatID, err.Error()))
+				break
+			}
+
+			bot.Send(tgbotapi.NewMessage(chatID, "Done."))
 		case "sh", "bash", "shell", "exec", "run":
 			ExecAndNotice(bot, chatID, commandArgs)
 		case "service", "srv":
