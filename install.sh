@@ -28,10 +28,6 @@ log_fail() {
 
 log_info "Gomon Installer"
 
-if [ ! $GOPATH ]; then
-    log_fail "ERROR: Missing GOPATH; please see https://golang.org/doc/code.html#GOPATH"
-fi
-
 if [[ $EUID -ne 0 ]]; then
     log_fail "ERROR: Must be run with root privileges."
 fi
