@@ -34,6 +34,8 @@ const (
 	StateMessageMask = "%s%s switch status to %s"
 	// MaxChunkSize for command output
 	MaxChunkSize = 4000
+	// VersionMessageMask for version
+	VersionMessageMask = "🚦 Gomon v%s (%s)\n⏰ Build at %s"
 )
 
 // Service structure
@@ -407,6 +409,16 @@ func (monitor *Monitor) Control() error {
 			bot.Send(tgbotapi.NewMessage(chatID, status))
 		case "v", "vote":
 			bot.Send(tgbotapi.NewMessage(chatID, GetVote()))
+		case "ver", "version":
+			bot.Send(tgbotapi.NewMessage(
+				chatID,
+				fmt.Sprintf(
+					VersionMessageMask,
+					gomonversion.Version,
+					gomonversion.GitCommit,
+					gomonversion.BuildTime,
+				),
+			))
 		}
 	}
 
