@@ -16,8 +16,8 @@ echo "--- Creating GitHub release v$VERSION"
 github_release release \
     --user "leominov" \
     --repo "self-monitoring" \
-    --tag "v$VERSION" \
-    --name "Gomon version $VERSION" \
+    --tag "$VERSION" \
+    --name "$VERSION" \
     --description "See CHANGES.md" \
     --pre-release
 
@@ -36,7 +36,7 @@ do
     github_release upload \
         --user "leominov" \
         --repo "self-monitoring" \
-        --tag "v$VERSION" \
+        --tag "$VERSION" \
         --name "$filename" \
         --file "$fullfile"
 

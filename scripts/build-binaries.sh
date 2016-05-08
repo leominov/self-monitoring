@@ -15,8 +15,6 @@ rm -rf pkg
 
 build-binary "linux" "amd64"
 build-binary "linux" "386"
-build-binary "linux" "arm"
-build-binary "linux" "arm64"
 build-binary "darwin" "amd64"
 build-binary "darwin" "386"
 build-binary "freebsd" "amd64"

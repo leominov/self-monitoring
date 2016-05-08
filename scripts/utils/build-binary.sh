@@ -13,7 +13,6 @@ export GOARCH=${2}
 NAME="gomon"
 
 BUILD_PATH="pkg"
-BINARY_FILENAME="$NAME-$GOOS-$GOARCH"
 
 echo -e "Building $NAME with:\n"
 
@@ -22,7 +21,47 @@ echo "GOARCH=$GOARCH"
 if [[ -n "$GOARM" ]]; then
     echo "GOARM=$GOARM"
 fi
+
+pkgOS=$GOOS
+case "$pkgOS" in
+    darwin)
+        pkgOS=Darwin
+        ;;
+    freebsd)
+        pkgOS=FreeBSD
+        ;;
+    linux)
+        pkgOS=Linux
+        ;;
+    windows)
+        pkgOS=Windows
+        ;;
+    *)
+        echo >&2 "Error: can't convert $s3Os to an appropriate value for 'uname -s'"
+        exit 1
+        ;;
+esac
+
+pkgArch=$GOARCH
+case "$pkgArch" in
+    amd64)
+        pkgArch=x86_64
+        ;;
+    386)
+        pkgArch=i386
+        ;;
+    arm)
+        pkgArch=armel
+        ;;
+    *)
+        echo >&2 "Error: can't convert $s3Arch to an appropriate value for 'uname -m'"
+        exit 1
+        ;;
+esac
+
 echo ""
+
+BINARY_FILENAME="$NAME-$pkgOS-$pkgArch"
 
 mkdir -p $BUILD_PATH
 go build -v -tags "autogen" -o $BUILD_PATH/$BINARY_FILENAME *.go
