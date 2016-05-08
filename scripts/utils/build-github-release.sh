@@ -32,12 +32,16 @@ info "Copying binary"
 cp $BINARY_PATH $TMP_RELEASE_DIRECTORY/gomon
 chmod +x $TMP_RELEASE_DIRECTORY/gomon
 
+info "Copying README.md"
+cp $BASE_DIRECTORY/README.md $TMP_RELEASE_DIRECTORY/
+
 info "Copying config"
-cp $BASE_DIRECTORY/example.config.json $TMP_RELEASE_DIRECTORY/config.json
+cp $BASE_DIRECTORY/example.config.json $TMP_RELEASE_DIRECTORY/
 
 info "Copying init script"
 mkdir -p $TMP_RELEASE_DIRECTORY/init/
 cp $INIT_DIDECTORY/gomon $TMP_RELEASE_DIRECTORY/init/
+cp $INIT_DIDECTORY/README.md $TMP_RELEASE_DIRECTORY/init/
 
 info "Copying install script"
 cp $BASE_DIRECTORY/install-gomon.sh $TMP_RELEASE_DIRECTORY/

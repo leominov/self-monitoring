@@ -1,6 +1,8 @@
 # Self-monitoring tool (init script)
+
 ## Configuration
 Open init script. Set your workspace directory and config filename.
+
 ## Usage
 Copy init script:
 ```shell
