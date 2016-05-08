@@ -4,9 +4,7 @@ set -e
 function build() {
     echo "--- Building release for: $1"
 
-    VERSION=$(< ./VERSION)
-
-    ./scripts/utils/build-github-release.sh $1 "v$VERSION"
+    ./scripts/utils/build-github-release.sh $1
 }
 
 export -f build
