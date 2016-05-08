@@ -26,7 +26,8 @@ case "$ACTION" in
     start)
         echo "Starting: "
 
-        if [ -f $GOMON_PID ]; then
+        if [ -f $GOMON_PID ]
+        then
             echo "Already running!"
             exit 1
         fi
@@ -54,24 +55,23 @@ case "$ACTION" in
         ;;
 
     reload)
-        if [ -f $GOMON_PID ]; then
+        if [ -f $GOMON_PID ]
+        then
             PID=`cat $GOMON_PID 2>/dev/null`
             $RUN_CMD --signal reload --pid $PID
             exit 0
-        else
-            echo "Currently not running."
         fi
+        echo "Currently not running."
         exit 1
         ;;
 
     status)
-        if [ -f $GOMON_PID ]; then
+        if [ -f $GOMON_PID ]
         then
             echo "Running pid="`cat $GOMON_PID`
             exit 0
-        else
-            echo "Currently not running."
         fi
+        echo "Currently not running."
         exit 1
         ;;
 
