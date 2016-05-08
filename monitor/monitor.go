@@ -370,15 +370,6 @@ func (monitor *Monitor) Control() error {
 		commandArgs := update.Message.CommandArguments()
 		chatID := update.Message.Chat.ID
 
-		/*
-			sh - Exec shell command
-			service - Alias for /sh service
-			calc - Calculator
-			up - Server uptime
-			status - Service list
-			who - Who is logged in
-			vote - Random vote
-		*/
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
 			ExecAndNotice(bot, chatID, commandArgs)
@@ -409,6 +400,8 @@ func (monitor *Monitor) Control() error {
 			bot.Send(tgbotapi.NewMessage(chatID, status))
 		case "v", "vote":
 			bot.Send(tgbotapi.NewMessage(chatID, GetVote()))
+		case "rld", "reload":
+			monitor.Configure()
 		case "ver", "version":
 			bot.Send(tgbotapi.NewMessage(
 				chatID,
