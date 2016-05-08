@@ -14,7 +14,7 @@ github_release release \
     --repo "self-monitoring" \
     --tag "v$VERSION" \
     --name "Gomon version $VERSION" \
-    --description "See README.md" \
+    --description "See CHANGES.md" \
     --pre-release
 
 if [ $? -eq 0 ]; then
