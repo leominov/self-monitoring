@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -38,7 +39,7 @@ const (
 	// MaxChunkSize for command output
 	MaxChunkSize = 4000
 	// VersionMessageMask for version
-	VersionMessageMask = "🚦 Gomon v%s (%s)\n⏰ Build at %s"
+	VersionMessageMask = "🚦 Gomon v%s-%s (%s;%s)\n⏰ Build at %s"
 )
 
 // Service structure
@@ -492,6 +493,8 @@ func (monitor *Monitor) Control() error {
 					VersionMessageMask,
 					gomonversion.Version,
 					gomonversion.GitCommit,
+					runtime.GOOS,
+					runtime.GOARCH,
 					gomonversion.BuildTime,
 				),
 			))
