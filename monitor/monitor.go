@@ -368,6 +368,7 @@ func (monitor *Monitor) Control() error {
 			up - Server uptime
 			status - Service list
 			who - Who is logged in
+			vote - Random vote
 		*/
 		switch command {
 		case "sh", "bash", "shell", "exec", "run":
