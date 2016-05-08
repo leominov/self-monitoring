@@ -7,6 +7,10 @@ Conventions used in this document:
 
 ## Change Log
 
+### 0.1f
+
+* Add release notice
+
 ### 0.1e
 
 * Uploading release to GitHub.
