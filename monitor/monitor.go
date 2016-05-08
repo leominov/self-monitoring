@@ -26,7 +26,14 @@ const (
 	StateON = "ON"
 	// StateOFF for service
 	StateOFF = "OFF"
-	msgMask  = "%s%s switch status to %s"
+	// StateEmojiON for status
+	StateEmojiON = "✅"
+	// StateEmojiOFF for status
+	StateEmojiOFF = "🆘"
+	// StateMessageMask for notice
+	StateMessageMask = "%s%s switch status to %s"
+	// MaxChunkSize for command output
+	MaxChunkSize = 4000
 )
 
 // Service structure
@@ -117,7 +124,7 @@ func (monitor *Monitor) RunLogger() error {
 	}
 
 	if msgText != "" {
-		logrus.Infof(msgMask, monitor.GetPrefix(), msgText, msgType)
+		logrus.Infof(StateMessageMask, monitor.GetPrefix(), msgText, msgType)
 	}
 
 	return nil
@@ -153,7 +160,7 @@ func (monitor *Monitor) RunTelegram() error {
 	}
 
 	if msgText != "" {
-		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf(msgMask, monitor.GetPrefix(), msgText, msgType))
+		msg := tgbotapi.NewMessage(telegram.ContactID, fmt.Sprintf(StateMessageMask, monitor.GetPrefix(), msgText, msgType))
 
 		if _, err := bot.Send(msg); err != nil {
 			return fmt.Errorf("Error sending message: %v", err)
@@ -289,7 +296,7 @@ func ExecAndNotice(bot *tgbotapi.BotAPI, chatID int64, command string) {
 			message = err.Error()
 		}
 
-		chunks := SplitByChunk(message, 4000)
+		chunks := SplitByChunk(message, MaxChunkSize)
 		for _, chunk := range chunks {
 			if len(chunks) > 1 {
 				bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
@@ -389,12 +396,12 @@ func (monitor *Monitor) Control() error {
 					continue
 				}
 
-				state := StateON
+				state := StateEmojiON
 				if service.CurrentState == false {
-					state = StateOFF
+					state = StateEmojiOFF
 				}
 
-				status += pref + fmt.Sprintf("%s is %s", service.Name, state)
+				status += pref + fmt.Sprintf("%s %s", state, service.Name)
 				pref = "\n"
 			}
 			bot.Send(tgbotapi.NewMessage(chatID, status))
