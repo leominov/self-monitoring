@@ -4,9 +4,6 @@ VERSION=$(< ./VERSION)
 FILES=./releases/*
 RELEASE_TYPE=$1
 
-echo $RELEASE_TYPE
-exit 0
-
 function github_release() {
     $GOPATH/bin/github-release "$@"
 }
