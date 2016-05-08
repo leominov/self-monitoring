@@ -7,6 +7,11 @@ Conventions used in this document:
 
 ## Change Log
 
+### 0.1h
+
+* Add GitHub release type support.
+* Rename install script.
+
 ### 0.1g
 
 * Update release naming.
