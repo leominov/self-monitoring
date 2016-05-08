@@ -285,6 +285,7 @@ func ExecAndNotice(bot *tgbotapi.BotAPI, chatID int64, command string) {
 		out, err := ExecCommand(command)
 		message := out
 		if err != nil {
+			logrus.Errorf("ExecCommand: %+v", err)
 			message = err.Error()
 		}
 
@@ -294,6 +295,11 @@ func ExecAndNotice(bot *tgbotapi.BotAPI, chatID int64, command string) {
 				bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 				time.Sleep(200 * time.Millisecond)
 			}
+
+			if chunk == "" {
+				continue
+			}
+
 			msg := tgbotapi.NewMessage(chatID, chunk)
 			bot.Send(msg)
 		}
