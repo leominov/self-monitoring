@@ -7,6 +7,10 @@ function github_release() {
     $GOPATH/bin/github-release "$@"
 }
 
+function notice_release() {
+    ./scripts/utils/notice-github-release.sh $1
+}
+
 echo "--- Creating GitHub release v$VERSION"
 
 github_release release \
@@ -18,6 +22,7 @@ github_release release \
     --pre-release
 
 if [ $? -eq 0 ]; then
+    notice_release $VERSION
     echo "Done."
 fi
 
