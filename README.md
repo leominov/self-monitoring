@@ -11,25 +11,26 @@
 Install package and dependencies:
 
 ```shell
-go get github.com/leominov/self-monitoring
+$ go get github.com/leominov/self-monitoring
 ```
 
 Create own config file:
 
 ```shell
-cp example.config.json config.json
+$ cp example.config.json config.json
 ```
 
 Edit configuration:
 
 ```shell
-vim config.json
+$ vim config.json
 ```
 
 Install:
 
 ```shell
-sudo make install
+$ make build
+$ sudo make install
 ```
 
 ## Special service commands
@@ -37,7 +38,7 @@ sudo make install
 Reload configuration:
 
 ```shell
-service gomon reload
+$ service gomon reload
 ```
 
 ## Telegram commands

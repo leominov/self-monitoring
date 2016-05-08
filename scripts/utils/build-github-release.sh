@@ -44,7 +44,7 @@ cp $INIT_DIDECTORY/gomon $TMP_RELEASE_DIRECTORY/init/
 cp $INIT_DIDECTORY/README.md $TMP_RELEASE_DIRECTORY/init/
 
 info "Copying install script"
-cp $BASE_DIRECTORY/install-gomon.sh $TMP_RELEASE_DIRECTORY/
+cp $BASE_DIRECTORY/install.sh $TMP_RELEASE_DIRECTORY/
 
 info "Tarring up the files"
 cd $TMP_RELEASE_DIRECTORY

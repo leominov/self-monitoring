@@ -36,10 +36,6 @@ if [[ $EUID -ne 0 ]]; then
     log_fail "ERROR: Must be run with root privileges."
 fi
 
-log_info "Building Gomon"
-make build
-log_verbose "Done"
-
 if [ ! -d "$GOMON_WD" ]; then
     log_verbose "Making directory: $GOMON_WD"
     mkdir -p $GOMON_WD

@@ -20,7 +20,7 @@ upload-release:
 	@scripts/upload-github-release.sh
 
 install:
-	@./install-gomon.sh
+	@./install.sh
 
 autogen:
 	@./.autogen
