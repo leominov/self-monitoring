@@ -435,7 +435,7 @@ func (monitor *Monitor) Control() error {
 			}
 
 			bot.Send(tgbotapi.NewMessage(chatID, "Done."))
-		case "srvdel", "service-del", "dervice-delete":
+		case "srvdel", "service-del", "service-delete":
 			words := strings.Fields(commandArgs)
 			if len(words) == 0 {
 				bot.Send(tgbotapi.NewMessage(chatID, "Empty service name."))
