@@ -17,6 +17,10 @@ github_release release \
     --description "See README.md" \
     --pre-release
 
+if [ $? -eq 0 ]; then
+    echo "Done."
+fi
+
 echo "--- Uploading file for release v$VERSION"
 
 for fullfile in $FILES
@@ -31,5 +35,7 @@ do
         --name "$filename" \
         --file "$fullfile"
 
-    echo "Done."
+    if [ $? -eq 0 ]; then
+        echo "Done."
+    fi
 done
