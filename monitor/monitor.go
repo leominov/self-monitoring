@@ -519,8 +519,8 @@ func (monitor *Monitor) Run() {
 
 	logrus.Debug("Debug mode enabled")
 
-	logrus.Debugf("Starting Gomon %s...", gomonversion.Version)
-	logrus.Debugf("Rinning with PID: %d", os.Getpid())
+	logrus.Infof("Starting Gomon %s...", gomonversion.Version)
+	logrus.Infof("Rinning with PID: %d", os.Getpid())
 
 	go monitor.MonitorRoutine()
 	go monitor.SignalRoutine()
