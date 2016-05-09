@@ -7,7 +7,11 @@ Conventions used in this document:
 
 ## Change Log
 
-### 0.1i
+### 0.1.1
+
+* Fix release build.
+
+### 0.1.0
 
 * Add GitHub release type support.
 * Rename install script.
@@ -17,7 +21,4 @@ Conventions used in this document:
 * Add cross compilation.
 * [CONFIG] Telegram commands for admins.
 * [CONFIG] Switch to time.ParseDuration().
-
-### 0.1a
-
 * Initial release.
