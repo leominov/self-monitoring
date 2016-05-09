@@ -114,7 +114,13 @@ Build binaries:
 $ make build-all
 ```
 
-Prepare and upload GitHub release:
+Prepare release:
+
+```shell
+$ make build-release
+```
+
+Create releases on Github and upload files:
 
 ```shell
 $ make upload-release
