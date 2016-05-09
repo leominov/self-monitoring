@@ -7,8 +7,9 @@ Conventions used in this document:
 
 ## Change Log
 
-### 0.1.1
+### 0.1.2
 
+* Install assistant.
 * Fix release build.
 
 ### 0.1.0
