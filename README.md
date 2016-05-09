@@ -1,12 +1,6 @@
 # Self-monitoring tool (sketch)
 
-## Environment variables
-
-* `GITHUB_TOKEN` - GitHub token for uploading releases;
-* `TELEGRAM_API_TOKEN` - Telegram token for release notice;
-* `TELEGRAM_CHAT_ID` - Telegram Chat ID for release notice.
-
-## Usage
+## How to Start
 
 Install package and dependencies:
 
@@ -26,11 +20,22 @@ Edit configuration:
 $ vim config.json
 ```
 
-Install:
+Build binary:
 
 ```shell
 $ make build
-$ sudo make install
+```
+
+Run:
+
+```shell
+$ ./gomon
+```
+
+Or install as a service:
+
+```shell
+$ ./install.sh
 ```
 
 ## Special service commands
@@ -79,4 +84,38 @@ Example with description:
         "admins": [] // Admin list to control monitoring
     }
 }
+```
+
+## Building release
+
+### Environment variables
+
+* `GITHUB_TOKEN` - GitHub token for uploading releases;
+* `TELEGRAM_API_TOKEN` - Telegram token for release notice;
+* `TELEGRAM_CHAT_ID` - Telegram Chat ID for release notice.
+
+### Installing dependencies
+
+```shell
+$ go get github.com/aktau/github-release
+```
+
+### Building
+
+Check release version:
+
+```shell
+$ vim VERSION
+```
+
+Build binaries:
+
+```shell
+$ make build-all
+```
+
+Prepare and upload GitHub release:
+
+```shell
+$ make upload-release
 ```
