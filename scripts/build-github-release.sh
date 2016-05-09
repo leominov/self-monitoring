@@ -9,6 +9,6 @@ function build() {
 
 export -f build
 
-rm -rf releases
+rm -rf releases tmp
 
 ls pkg/* | xargs -I {} bash -c "build {}"
