@@ -3,6 +3,9 @@
 VERSION=$(< ./VERSION)
 FILES=./releases/*
 RELEASE_TYPE=$1
+PLATFORM=`uname -s`
+
+ASSISTANT_URL="https://github.com/leominov/self-monitoring/releases/download/$VERSION/assistant.sh"
 
 function github_release() {
     $GOPATH/bin/github-release "$@"
@@ -14,17 +17,31 @@ function notice_release() {
 
 echo "--- Creating GitHub release v$VERSION"
 
+ASSISTANT_URL=$(curl -s http://tinyurl.com/api-create.php?url=$ASSISTANT_URL)
+DESCRIPTION="See CHANGES.md
+
+curl -sSL ASSISTANT_URL | sh
+"
+
 github_release release \
     --user "leominov" \
     --repo "self-monitoring" \
     --tag "$VERSION" \
     --name "$VERSION" \
-    --description "See CHANGES.md" \
+    --description "$DESCRIPTION" \
     $RELEASE_TYPE
 
 if [ $? -eq 0 ]; then
     notice_release $VERSION
     echo "Done."
+fi
+
+echo "--- Creating version assistant"
+cp ./scripts/templates/assistant.sh ./releases/assistant.sh
+if [[ $PLATFORM == "Darwin" ]]; then
+    sed -i '' "s/TMP_VERSION/$VERSION/g" ./releases/assistant.sh
+else
+    sed -i "s/TMP_VERSION/$VERSION/g" ./releases/assistant.sh
 fi
 
 echo "--- Uploading file for release v$VERSION"
