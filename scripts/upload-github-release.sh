@@ -20,7 +20,8 @@ echo "--- Creating GitHub release v$VERSION"
 ASSISTANT_URL=$(curl -s http://tinyurl.com/api-create.php?url=$ASSISTANT_URL)
 DESCRIPTION="See CHANGES.md
 
-curl -sSL ASSISTANT_URL | sh
+Install via assistant:
+curl -sSL $ASSISTANT_URL | sh
 "
 
 github_release release \
@@ -36,7 +37,7 @@ if [ $? -eq 0 ]; then
     echo "Done."
 fi
 
-echo "--- Creating version assistant"
+echo "--- Creating assistant"
 cp ./scripts/templates/assistant.sh ./releases/assistant.sh
 if [[ $PLATFORM == "Darwin" ]]; then
     sed -i '' "s/TMP_VERSION/$VERSION/g" ./releases/assistant.sh
