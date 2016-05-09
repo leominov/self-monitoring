@@ -10,15 +10,15 @@ GOMON_BINARY="gomon"
 export GOMON_WD
 
 log_info() {
-    echo "-----> $*"
+    echo "--- $*"
 }
 
 log_verbose() {
-    echo "       $*"
+    echo "    $*"
 }
 
 log_warn() {
-    echo " !     $*"
+    echo " !  $*"
 }
 
 log_fail() {
