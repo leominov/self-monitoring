@@ -1,5 +1,4 @@
 #!/bin/bash
-# curl -sSL https://github.com/leominov/self-monitoring/releases/download/0.1.1/download.sh | sh
 
 set -e
 
