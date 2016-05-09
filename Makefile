@@ -16,7 +16,7 @@ autogen:
 build: autogen
 	@go build -tags "autogen" gomon.go
 
-build-binaries:
+build-binaries: autogen
 	@scripts/build-binaries.sh
 
 build-release:
