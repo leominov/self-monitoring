@@ -17,10 +17,12 @@ function notice_release() {
 
 echo "--- Creating GitHub release v$VERSION"
 
-ASSISTANT_URL=$(curl -s http://tinyurl.com/api-create.php?url=$ASSISTANT_URL)
+ASSISTANT_TINY_URL=$(curl -s http://tinyurl.com/api-create.php?url=$ASSISTANT_URL)
 DESCRIPTION="See CHANGES.md
 
 Install via assistant:
+curl -sSL $ASSISTANT_TINY_URL | sh
+OR
 curl -sSL $ASSISTANT_URL | sh
 "
 
