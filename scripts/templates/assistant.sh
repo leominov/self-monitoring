@@ -20,7 +20,7 @@ echo "--- Preparing for installation $VERSION"
 if [ -f "config.json" ]; then
     echo "    Creating new configuration (config.json)"
     cp example.config.json config.json
-else
+fi
 echo " !  Please do not forget to update your monitoring configuration."
 echo "    Press ENTER to continue or Ctrl+C for escaping"
 read keypress
