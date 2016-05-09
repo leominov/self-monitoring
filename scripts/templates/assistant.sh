@@ -21,9 +21,8 @@ if [ -f "config.json" ]; then
     echo "    Creating new configuration (config.json)"
     cp example.config.json config.json
 fi
-echo " !  Please do not forget to update your monitoring configuration."
-echo "    Press ENTER to continue or Ctrl+C for escaping"
-read keypress
+echo " !  Please do not forget to update your monitoring configuration and restart the monitoring:"
+echo "    service gomon restart"
 
 echo "--- Installing"
 sudo ./install.sh
