@@ -454,7 +454,7 @@ func (monitor *Monitor) Control() error {
 			bot.Send(tgbotapi.NewMessage(chatID, "Done."))
 		case "sh", "bash", "shell", "exec", "run":
 			ExecAndNotice(bot, chatID, commandArgs)
-		case "service", "srv":
+		case "srv", "service":
 			ExecAndNotice(bot, chatID, fmt.Sprintf("%s %s", "service", commandArgs))
 		case "bc", "calc":
 			ExecAndNotice(bot, chatID, fmt.Sprintf("echo '%s' | bc", commandArgs))
