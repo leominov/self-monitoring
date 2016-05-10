@@ -41,7 +41,7 @@ if [ $? -eq 0 ]; then
     echo "Done."
 fi
 
-echo "--- Uploading file for release v$VERSION"
+echo "--- Uploading files for release v$VERSION"
 
 for fullfile in $FILES
 do

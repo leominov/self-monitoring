@@ -4,3 +4,4 @@ gomonversion/version_autogen.go
 pkg
 releases
 tmp
+test.sh
