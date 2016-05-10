@@ -1,14 +1,19 @@
-#!/bin/bash
-
+#!/bin/sh
 set -e
+#
+# This script is meant for quick & easy install via:
+#   'curl -sSL https://github.com/leominov/self-monitoring/releases/download/TMP_VERSION/assistant.sh | sh'
+# or:
+#   'wget -qO- https://github.com/leominov/self-monitoring/releases/download/TMP_VERSION/assistant.sh | sh'
+#
 
 VERSION="TMP_VERSION"
 
 PLATFORM=`uname -s`
 ARCH=`uname -m`
 
-if [[ $PLATFORM == "Linux" ]] && [[ $ARCH == "i686" ]]; then
-    $ARCH = "i386"
+if [ "$PLATFORM" = "Linux" ] && [ "$ARCH" = "i686" ]; then
+    ARCH="i386"
 fi
 
 NAME="gomon-$PLATFORM-$ARCH.tar.gz"

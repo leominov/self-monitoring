@@ -20,9 +20,11 @@ echo "--- Creating GitHub release v$VERSION"
 ASSISTANT_TINY_URL=$(curl -s http://tinyurl.com/api-create.php?url=$ASSISTANT_URL)
 DESCRIPTION="See CHANGES.md
 
-Install via assistant:
+Quick and easy install via:
 curl -sSL $ASSISTANT_TINY_URL | sh
-OR
+Blocked?
+
+Try:
 curl -sSL $ASSISTANT_URL | sh
 "
 
@@ -37,14 +39,6 @@ github_release release \
 if [ $? -eq 0 ]; then
     notice_release $VERSION
     echo "Done."
-fi
-
-echo "--- Creating assistant"
-cp ./scripts/templates/assistant.sh ./releases/assistant.sh
-if [[ $PLATFORM == "Darwin" ]]; then
-    sed -i '' "s/TMP_VERSION/$VERSION/g" ./releases/assistant.sh
-else
-    sed -i "s/TMP_VERSION/$VERSION/g" ./releases/assistant.sh
 fi
 
 echo "--- Uploading file for release v$VERSION"
