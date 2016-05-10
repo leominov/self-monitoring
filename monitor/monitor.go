@@ -422,6 +422,8 @@ func (monitor *Monitor) Control() error {
 		chatID := update.Message.Chat.ID
 
 		switch command {
+		case "adm", "admin", "admins":
+			bot.Send(tgbotapi.NewMessage(chatID, strings.Join(monitor.Config.Telegram.AdminList, " ")))
 		case "srvadd", "service-add":
 			words := strings.Fields(commandArgs)
 			if len(words) == 0 {
