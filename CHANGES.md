@@ -7,8 +7,9 @@ Conventions used in this document:
 
 ## Change Log
 
-### 0.1.2
+### 0.1.4
 
+* Add redirect from i686 to i386.
 * Install assistant.
 * Fix release build.
 

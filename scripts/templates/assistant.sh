@@ -7,6 +7,10 @@ VERSION="TMP_VERSION"
 PLATFORM=`uname -s`
 ARCH=`uname -m`
 
+if [[ $PLATFORM == "Linux" ]] && [[ $ARCH == "i686" ]]; then
+    $ARCH = "i386"
+fi
+
 NAME="gomon-$PLATFORM-$ARCH.tar.gz"
 URL="https://github.com/leominov/self-monitoring/releases/download/$VERSION/$NAME"
 

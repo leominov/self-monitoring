@@ -13,7 +13,6 @@ echo $GOPATH
 
 rm -rf pkg
 
-# Add redirect from i686 to i386
 build-binary "linux" "amd64"
 build-binary "linux" "386"
 build-binary "darwin" "amd64"
