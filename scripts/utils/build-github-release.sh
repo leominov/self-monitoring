@@ -26,7 +26,7 @@ TMP_RELEASE_DIRECTORY=$TMP_DIRECTORY/$RELEASE_NAME
 rm -rf $TMP_RELEASE_DIRECTORY
 mkdir -p $TMP_RELEASE_DIRECTORY
 
-if [[ "$BINARY_PATH" == *"windows"* ]]; then
+if [[ "$BINARY_PATH" == *"Windows"* ]]; then
     RELEASE_FILE_NAME="$RELEASE_NAME.zip"
 
     info "Copying binary"
