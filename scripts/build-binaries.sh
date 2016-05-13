@@ -13,6 +13,8 @@ echo $GOPATH
 
 rm -rf pkg
 
+# build-binary "windows" "amd64"
+# build-binary "windows" "386"
 build-binary "linux" "amd64"
 build-binary "linux" "386"
 build-binary "darwin" "amd64"

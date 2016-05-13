@@ -63,6 +63,10 @@ echo ""
 
 BINARY_FILENAME="$NAME-$pkgOS-$pkgArch"
 
+if [[ "$GOOS" == "windows" ]]; then
+    BINARY_FILENAME="$BINARY_FILENAME.exe"
+fi
+
 mkdir -p $BUILD_PATH
 go build -v -tags "autogen" -o $BUILD_PATH/$BINARY_FILENAME *.go
 
