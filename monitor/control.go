@@ -53,5 +53,6 @@ func ExecCommand(cmd string) (string, error) {
 		return "", err
 	}
 
+	// must be in UTF-8
 	return string(out), nil
 }
