@@ -383,7 +383,11 @@ func (monitor *Monitor) Control() error {
 			}
 		}
 
-		if !isAdmin || !update.Message.IsCommand() {
+		if !update.Message.IsCommand() {
+			continue
+		}
+
+		if !isAdmin {
 			logrus.Errorf(
 				"Access denied to exec '%s' from %s (%s)",
 				update.Message.Text,
