@@ -500,8 +500,11 @@ func (monitor *Monitor) Run() {
 	logrus.Infof("Starting Gomon %s...", gomonversion.Version)
 	logrus.Infof("Rinning with PID: %d", os.Getpid())
 
-	go monitor.MonitorRoutine()
-	go monitor.SignalRoutine()
+	if runtime.GOOS != "windows" {
+		go monitor.MonitorRoutine()
+		go monitor.SignalRoutine()
+	}
+
 	go monitor.Control()
 
 	code := <-msignal.ExitChan

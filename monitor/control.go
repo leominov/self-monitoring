@@ -3,6 +3,7 @@ package monitor
 import (
 	"errors"
 	"os/exec"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -39,7 +40,15 @@ func ExecCommand(cmd string) (string, error) {
 		return "", ErrShellEmpty
 	}
 
-	out, err := exec.Command("bash", "-c", cmd).Output()
+	var out []byte
+	var err error
+
+	if runtime.GOOS != "windows" {
+		out, err = exec.Command("bash", "-c", cmd).Output()
+	} else {
+		out, err = exec.Command("powershell", cmd).Output()
+	}
+
 	if err != nil {
 		return "", err
 	}
