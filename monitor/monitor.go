@@ -375,16 +375,16 @@ func (monitor *Monitor) Control() error {
 	}
 
 	for update := range updates {
+		if !update.Message.IsCommand() {
+			continue
+		}
+
 		isAdmin := false
 		for _, name := range telegram.AdminList {
 			if update.Message.From.UserName == name {
 				isAdmin = true
 				break
 			}
-		}
-
-		if !update.Message.IsCommand() {
-			continue
 		}
 
 		if !isAdmin {
