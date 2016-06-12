@@ -375,6 +375,11 @@ func (monitor *Monitor) Control() error {
 	}
 
 	for update := range updates {
+		if update.Message == nil {
+			logrus.Error("Message is null")
+			continue
+		}
+
 		if !update.Message.IsCommand() {
 			continue
 		}
