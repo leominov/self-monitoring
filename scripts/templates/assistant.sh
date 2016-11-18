@@ -25,9 +25,9 @@ tar -xf $NAME
 rm $NAME
 
 echo "--- Preparing for installation $VERSION"
-if [ -f "config.json" ]; then
+if [ ! -f "config.json" ]; then
     echo "    Creating new configuration (config.json)"
-    cp example.config.json config.json
+    mv example.config.json config.json
 fi
 echo " !  Please do not forget to update your monitoring configuration and restart the monitoring:"
 echo "    service gomon restart"
