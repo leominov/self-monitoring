@@ -5,6 +5,7 @@ GOMON_WD="/opt/self-monitoring/"
 GOMON_INIT="/etc/init.d/gomon"
 GOMON_INIT_SOURCE="init/gomon"
 GOMON_CONFIG="config.json"
+GOMON_EXAMPLE_CONFIG="example.config.json"
 GOMON_BINARY="gomon"
 
 export GOMON_WD
@@ -52,7 +53,7 @@ fi
 log_info "Configuring"
 if [ ! -f "$GOMON_WD/$GOMON_CONFIG" ]; then
     log_verbose "Coping config file"
-    cp $GOMON_CONFIG $GOMON_WD
+    cp $GOMON_EXAMPLE_CONFIG $GOMON_WD
     log_verbose "Done"
 else
     log_warn "Please do not forget to update your monitoring configuration and restart the monitoring:"
