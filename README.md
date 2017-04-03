@@ -71,10 +71,10 @@ Example with description:
     "nodeName": "local", // Alias for logs and messages
     "interval": "15s", // Update interval
     "notifyAtStart": false, // Send notification with offline services on start
-	"processList": [ // Process list for monitoring
+    "processList": [ // Process list for monitoring
         "acrypt",
-		"capella",
-		"docker"
+        "capella",
+        "docker"
     ],
     "logLevel": "info", // Logger level (debug, info, warning, error, fatal, panic)
     "telegram": {
