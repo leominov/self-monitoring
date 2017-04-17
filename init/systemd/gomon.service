@@ -1,0 +1,12 @@
+[Unit]
+Description=Gomon - Self Monitoring Tool
+Documentation=https://github.com/leominov/self-monitoring
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/self-monitoring/gomon --config=/opt/self-monitoring/config.json
+ExecReload=/bin/kill -s USR1 $MAINPID
+
+[Install]
+WantedBy=multi-user.target
