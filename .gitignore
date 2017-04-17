@@ -1,5 +1,4 @@
 config.json
-gomon
 gomonversion/version_autogen.go
 pkg
 releases
