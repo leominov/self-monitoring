@@ -4,7 +4,7 @@
     "processList": [
         "acrypt",
         "capella",
-        "docker",
+        "dockerd",
         "igmpproxy",
         "memcached",
         "mongod",

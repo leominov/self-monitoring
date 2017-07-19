@@ -74,7 +74,7 @@ Example with description:
     "processList": [ // Process list for monitoring
         "acrypt",
         "capella",
-        "docker"
+        "dockerd"
     ],
     "logLevel": "info", // Logger level (debug, info, warning, error, fatal, panic)
     "telegram": {
